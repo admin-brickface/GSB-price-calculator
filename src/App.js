@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
+import html2pdf from 'html2pdf.js';
 import './App.css';
 
 // Register cell types
@@ -2690,7 +2691,26 @@ function App() {
     salesRep: ''
   });
 
+  const contentRef = useRef();
+
+  const generatePDF = () => {
+    const element = contentRef.current;
+    const timestamp = new Date().toLocaleDateString().replace(/\//g, '-');
+    const fileName = `${activeTab}_${customerInfo.name || 'estimate'}_${timestamp}.pdf`;
+
+    const options = {
+      margin: 10,
+      filename: fileName,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(options).from(element).save();
+  };
+
   return (
+
     <div className="App">
       <header>
         <h1>🏗️ Garden State Brickface & Siding Pricing Calculator</h1>
@@ -2723,7 +2743,7 @@ function App() {
         </button>
       </div>
 
-      <main>
+      <main ref={contentRef}>
         {activeTab === 'gutters' && <GuttersAndLeaders />}
         {activeTab === 'stone-veneers' && <StoneVeneers />}
         {activeTab === 'stucco-painting' && <StuccoPainting />}
@@ -2751,7 +2771,7 @@ function App() {
             onChange={(e) => setCustomerInfo({...customerInfo, salesRep: e.target.value})}
           />
         </div>
-        <button className="generate-pdf">Generate PDF</button>
+        <button className="generate-pdf" onClick={generatePDF}>Generate PDF</button>
       </footer>
     </div>
   );
