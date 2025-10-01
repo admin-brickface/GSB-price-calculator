@@ -1,0 +1,497 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+  background-color: #FFFFFF;
+  min-height: 100vh;
+}
+
+header {
+  background-color: #2C3E50;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 3px solid #34495E;
+}
+
+header h1 {
+  font-size: 28px;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  background-color: #ECF0F1;
+  padding: 0;
+  border-bottom: 2px solid #BDC3C7;
+  overflow-x: auto;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 15px 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  color: #2C3E50;
+  transition: all 0.3s;
+  white-space: nowrap;
+  min-width: 150px;
+}
+
+.tabs button:hover {
+  background-color: #D5DBDB;
+}
+
+.tabs button.active {
+  background-color: #FFFFFF;
+  border-bottom: 3px solid #3498DB;
+  color: #3498DB;
+  font-weight: 600;
+}
+
+/* Main content */
+main {
+  padding: 30px 20px 250px 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* Gutters and Leaders */
+.gutters-and-leaders h2,
+.stone-veneers h2,
+.stucco-painting h2,
+.house-painting h2 {
+  margin-bottom: 25px;
+  color: #2C3E50;
+  font-size: 24px;
+  border-bottom: 2px solid #3498DB;
+  padding-bottom: 10px;
+}
+
+.three-column-layout,
+.two-column-layout {
+  display: grid;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.three-column-layout {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.two-column-layout {
+  grid-template-columns: 1fr 1fr;
+}
+
+.table-section h3 {
+  background-color: #34495E;
+  color: #FFFFFF;
+  padding: 10px;
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.table-section {
+  border: 1px solid #BDC3C7;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Handsontable overrides */
+.location-cell {
+  background-color: #ECF0F1 !important;
+  font-weight: 600;
+}
+
+/* Subtotal and total rows */
+.subtotal-row,
+.deduct-row,
+.total-row,
+.note-row {
+  padding: 8px;
+  margin-top: 5px;
+  font-weight: 600;
+}
+
+.subtotal-row {
+  background-color: #E8F6F3;
+  border: 1px solid #A9DFBF;
+}
+
+.deduct-row {
+  background-color: #FADBD8;
+  border: 1px solid #F1948A;
+  color: #C0392B;
+}
+
+.total-row {
+  background-color: #D6EAF8;
+  border: 1px solid #85C1E9;
+  color: #21618C;
+  font-size: 16px;
+}
+
+.note-row {
+  background-color: #FEF9E7;
+  border: 1px solid #F9E79F;
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* Price Tables */
+.price-tables-section {
+  margin-top: 40px;
+}
+
+.price-table {
+  margin-bottom: 30px;
+}
+
+.price-table h3 {
+  background-color: #34495E;
+  color: #FFFFFF;
+  padding: 12px;
+  margin: 0 0 10px 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.pricing-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #BDC3C7;
+}
+
+.pricing-table thead {
+  background-color: #ECF0F1;
+}
+
+.pricing-table th {
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+  border: 1px solid #BDC3C7;
+  font-size: 13px;
+}
+
+.pricing-table td {
+  padding: 8px 10px;
+  border: 1px solid #BDC3C7;
+  font-size: 13px;
+}
+
+.pricing-table tbody tr:nth-child(even) {
+  background-color: #F8F9F9;
+}
+
+.total-price-cell {
+  font-weight: 600;
+  text-align: right;
+  background-color: #E8F6F3;
+}
+
+/* Red notices and text */
+.red-notice {
+  background-color: #FADBD8;
+  color: #C0392B;
+  padding: 12px;
+  margin: 15px 0;
+  border: 2px solid #E74C3C;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.red-text {
+  color: #E74C3C;
+  font-weight: 600;
+}
+
+/* Project Calculation */
+.project-calculation-section {
+  margin-top: 40px;
+  max-width: 600px;
+}
+
+.calculation-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid #2C3E50;
+}
+
+.calculation-table thead {
+  background-color: #2C3E50;
+  color: #FFFFFF;
+}
+
+.calculation-table th {
+  padding: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  border: 1px solid #34495E;
+}
+
+.calculation-table td {
+  padding: 10px 12px;
+  border: 1px solid #BDC3C7;
+}
+
+.label-cell {
+  font-weight: 600;
+  background-color: #ECF0F1;
+}
+
+.input-cell {
+  text-align: right;
+  font-weight: 600;
+  font-size: 15px;
+  background-color: #FFFFFF;
+}
+
+/* Contract Specifications */
+.contract-specs-section {
+  margin-top: 40px;
+  border: 2px solid #2C3E50;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.specs-header {
+  background-color: #F39C12;
+  color: #000000;
+  padding: 12px;
+  font-weight: 600;
+  text-align: center;
+  font-size: 15px;
+}
+
+.specs-content {
+  padding: 20px;
+  background-color: #FDFEFE;
+}
+
+.specs-content ul {
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.specs-content li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+/* Guidelines Box */
+.guidelines-box {
+  border: 2px solid #3498DB;
+  border-radius: 4px;
+  padding: 20px;
+  background-color: #EBF5FB;
+}
+
+.guidelines-box h3 {
+  color: #21618C;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.guidelines-box ul {
+  margin-left: 20px;
+}
+
+.guidelines-box li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+/* Job Minimums */
+.job-minimums h3 {
+  color: #C0392B;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.job-minimums table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.job-minimums td {
+  padding: 10px;
+  border: 1px solid #000000;
+}
+
+/* Stucco/House Painting specific layouts */
+.stucco-layout,
+.house-painting .stucco-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.walls-table-section {
+  border: 1px solid #BDC3C7;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.trim-tables-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.small-table {
+  border: 1px solid #BDC3C7;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.small-table h3 {
+  background-color: #34495E;
+  color: #FFFFFF;
+  padding: 8px;
+  margin: 0;
+  font-size: 12px;
+  text-align: center;
+}
+
+.outs-inputs {
+  padding: 10px;
+  background-color: #FEF9E7;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.outs-inputs input {
+  width: 60px;
+  text-align: center;
+  padding: 4px;
+  border: 1px solid #BDC3C7;
+  border-radius: 3px;
+}
+
+/* Footer */
+footer {
+  background-color: #ECF0F1;
+  padding: 20px;
+  border-top: 3px solid #BDC3C7;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.customer-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.customer-info input {
+  padding: 12px;
+  border: 1px solid #BDC3C7;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #FFFFFF;
+}
+
+.customer-info input:focus {
+  outline: none;
+  border-color: #3498DB;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.generate-pdf {
+  width: 100%;
+  max-width: 1600px;
+  padding: 15px;
+  background-color: #27AE60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 auto;
+  display: block;
+  transition: background-color 0.3s;
+}
+
+.generate-pdf:hover {
+  background-color: #229954;
+}
+
+.generate-pdf:active {
+  background-color: #1E8449;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .three-column-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .two-column-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .stucco-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    overflow-x: scroll;
+  }
+  
+  .tabs button {
+    min-width: 120px;
+    font-size: 13px;
+    padding: 12px 15px;
+  }
+  
+  .customer-info {
+    grid-template-columns: 1fr;
+  }
+  
+  main {
+    padding: 20px 10px 250px 10px;
+  }
+  
+  header h1 {
+    font-size: 20px;
+  }
+}
+
+/* Print styles */
+@media print {
+  footer {
+    display: none;
+  }
+  
+  .tabs {
+    display: none;
+  }
+  
+  main {
+    padding-bottom: 0;
+  }
+}
