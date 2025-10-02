@@ -2706,7 +2706,7 @@ function App() {
         scale: 3,
         useCORS: true,
         letterRendering: true,
-        windowWidth: 1600
+        windowWidth: 1300
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
@@ -2757,6 +2757,26 @@ function App() {
         {activeTab === 'house-painting' && <HousePainting />}
       </main>
 
+            <main ref={contentRef}>
+        {activeTab === 'gutters' && <GuttersAndLeaders />}
+        {activeTab === 'stone-veneers' && <StoneVeneers />}
+        {activeTab === 'stucco-painting' && <StuccoPainting />}
+        {activeTab === 'house-painting' && <HousePainting />}
+        
+        {/* Customer info section - will appear in PDF */}
+        <div className="pdf-customer-info">
+          <div className="customer-row">
+            <strong>Customer Name:</strong> {customerInfo.name || '_________________'}
+          </div>
+          <div className="customer-row">
+            <strong>Project Location:</strong> {customerInfo.address || '_________________'}
+          </div>
+          <div className="customer-row">
+            <strong>Sales Rep:</strong> {customerInfo.salesRep || '_________________'}
+          </div>
+        </div>
+      </main>
+
       <footer>
         <div className="customer-info">
           <input 
@@ -2780,6 +2800,7 @@ function App() {
         </div>
         <button className="generate-pdf" onClick={generatePDF}>Generate PDF</button>
       </footer>
+
     </div>
   );
 }
