@@ -2094,7 +2094,8 @@ function HousePainting() {
   const totalGarageDoors = garageDoorsData.reduce((sum, row) => sum + (parseFloat(row[1]) || 0), 0);
 
   // Calculate price totals
-  const selectedWallsTotal = paintingWalls.find(w => w.checked) ? paintingWalls.find(w => w.checked).sf * paintingWalls.find(w => w.checked).price : 0;
+  const selectedWallsTotal = paintingWalls.find(w => w.checked) ?
+    roundedSquares * paintingWalls.find(w => w.checked).price : 0;
   const trimTotal = totalWindowTrim * 61.48 + totalDoorTrim * 61.48 + totalFascia * 6.36 + totalSoffit * 8.48 + shuttersRemove * 77.38 + shuttersPaint * 106.0 + totalEntryDoors * 424.0 + totalGarageDoors * 530.0;
   const miscTotal = miscellaneousItems.reduce((sum, item) => sum + (item.qty * item.price), 0);
 
