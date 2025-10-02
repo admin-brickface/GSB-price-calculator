@@ -381,8 +381,8 @@ function GuttersAndLeaders() {
       </div>
 
       {/* Project Calculation */}
-      <div style={{display: 'flex', gap: '20px', marginTop: '40px'}}>
-      <div className="project-calculation-section" style={{flex: '0 0 600px', marginTop: '0'}}>
+      <div style={{display: 'flex', gap: '30px', marginTop: '40px', alignItems: 'flex-start'}}>
+  <div className="project-calculation-section" style={{flex: '0 0 500px', marginTop: '0'}}>
         <div className="red-notice">
           JOB MINIMUM IS $650 IF COMBINED WITH OTHER WORK - STAND ALONE JOB MINIMUM IS $2800
         </div>
@@ -464,7 +464,7 @@ function GuttersAndLeaders() {
       </div>
 
       {/* Contract Specifications */}
-      <div className="contract-specs-section">
+      <div className="contract-specs-section" style={{flex: '1', minWidth: '500px'}}>
         <div className="specs-header">CONTRACT SPECIFICATIONS BELOW</div>
         
         <div className="specs-content">
@@ -945,8 +945,8 @@ function StoneVeneers() {
       </div>
 
       {/* Project Calculation for Stone Veneers */}
-      <div style={{display: 'flex', gap: '20px', marginTop: '40px'}}>
-      <div className="project-calculation-section" style={{flex: '0 0 600px', marginTop: '0'}}>
+      <div style={{display: 'flex', gap: '30px', marginTop: '40px', alignItems: 'flex-start'}}>
+  <div className="project-calculation-section" style={{flex: '0 0 500px', marginTop: '0'}}>
         <table className="calculation-table">
           <thead>
             <tr>
@@ -1083,8 +1083,10 @@ function StoneVeneers() {
       </div>
 
       {/* Contract Specifications */}
-      <div className="contract-specs-section">
-        <div className="specs-header" style={{backgroundColor: '#FFFF00', color: '#000000'}}>CONTRACT SPECIFICATIONS BELOW</div>
+      <div style={{display: 'flex', gap: '30px', marginTop: '40px', alignItems: 'flex-start'}}>
+  <div className="project-calculation-section" style={{flex: '0 0 500px', marginTop: '0'}}>
+          CONTRACT SPECIFICATIONS BELOW
+          </div>
         
         <div className="specs-content">
           <ul style={{listStyleType: 'circle'}}>
