@@ -2699,22 +2699,28 @@ function App() {
     const fileName = `${activeTab}_${customerInfo.name || 'estimate'}_${timestamp}.pdf`;
 
     const options = {
-      margin: [5, 5, 5, 5],
-      filename: fileName,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { 
-        scale: 2,
-        useCORS: true,
-        letterRendering: true
-      },
-      jsPDF: { 
-        unit: 'mm', 
-        format: 'a4', 
-        orientation: 'landscape' 
-      }
-    };
-
-
+    margin: [10, 10, 10, 10],
+    filename: fileName,
+    image: { type: 'jpeg', quality: 1.0 },
+    html2canvas: { 
+      scale: 3,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      letterRendering: true,
+      scrollY: -window.scrollY,
+      scrollX: 0,
+      width: element.scrollWidth,
+      height: element.scrollHeight
+    },
+    jsPDF: { 
+      unit: 'mm', 
+      format: 'a4', 
+      orientation: 'landscape',
+      compress: true
+    },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+  };
 
 
     html2pdf().set(options).from(element).save();
