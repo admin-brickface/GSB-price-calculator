@@ -381,7 +381,8 @@ function GuttersAndLeaders() {
       </div>
 
       {/* Project Calculation */}
-      <div className="project-calculation-section">
+      <div style={{display: 'flex', gap: '20px', marginTop: '40px'}}>
+      <div className="project-calculation-section" style={{flex: '0 0 600px', marginTop: '0'}}>
         <div className="red-notice">
           JOB MINIMUM IS $650 IF COMBINED WITH OTHER WORK - STAND ALONE JOB MINIMUM IS $2800
         </div>
@@ -481,6 +482,7 @@ function GuttersAndLeaders() {
         </div>
       </div>
     </div>
+      </div>
   );
 }
 
@@ -943,7 +945,8 @@ function StoneVeneers() {
       </div>
 
       {/* Project Calculation for Stone Veneers */}
-      <div className="project-calculation-section">
+      <div style={{display: 'flex', gap: '20px', marginTop: '40px'}}>
+      <div className="project-calculation-section" style={{flex: '0 0 600px', marginTop: '0'}}>
         <table className="calculation-table">
           <thead>
             <tr>
@@ -1114,6 +1117,7 @@ function StoneVeneers() {
         </div>
       </div>
     </div>
+        </div>
   );
 }
 
