@@ -2754,13 +2754,6 @@ function App() {
         </button>
       </div>
 
-      <main ref={contentRef}>
-        {activeTab === 'gutters' && <GuttersAndLeaders />}
-        {activeTab === 'stone-veneers' && <StoneVeneers />}
-        {activeTab === 'stucco-painting' && <StuccoPainting />}
-        {activeTab === 'house-painting' && <HousePainting />}
-      </main>
-
             <main ref={contentRef}>
         {activeTab === 'gutters' && <GuttersAndLeaders />}
         {activeTab === 'stone-veneers' && <StoneVeneers />}
