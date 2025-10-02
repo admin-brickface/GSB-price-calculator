@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
 import 'handsontable/dist/handsontable.full.css';
-import html2pdf from 'html2pdf.js';
+import html2canvas from 'html2canvas';
 import './App.css';
 
 // Register cell types
@@ -2694,37 +2694,42 @@ function App() {
   const contentRef = useRef();
 
   const generatePDF = () => {
-    const element = contentRef.current;
-    const timestamp = new Date().toLocaleDateString().replace(/\//g, '-');
-    const fileName = `${activeTab}_${customerInfo.name || 'estimate'}_${timestamp}.pdf`;
+  const element = contentRef.current;
+  const timestamp = new Date().toLocaleDateString().replace(/\//g, '-');
+  const fileName = `${activeTab}_${customerInfo.name || 'estimate'}_${timestamp}.jpg`;
 
-    const options = {
-    margin: [10, 10, 10, 10],
-    filename: fileName,
-    image: { type: 'jpeg', quality: 1.0 },
-    html2canvas: { 
-      scale: 3,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-      letterRendering: true,
-      scrollY: -window.scrollY,
-      scrollX: 0,
-      width: element.scrollWidth,
-      height: element.scrollHeight
-    },
-    jsPDF: { 
-      unit: 'mm', 
-      format: 'a4', 
-      orientation: 'landscape',
-      compress: true
-    },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-  };
+  // Scroll to top to ensure everything is visible
+  window.scrollTo(0, 0);
 
+  // Use html2canvas to capture the entire content as one image
+  html2canvas(element, {
+    scale: 2,
+    useCORS: true,
+    allowTaint: true,
+    logging: false,
+    width: element.scrollWidth,
+    height: element.scrollHeight,
+    windowWidth: element.scrollWidth,
+    windowHeight: element.scrollHeight
+  }).then(canvas => {
+    // Convert canvas to JPEG blob
+    canvas.toBlob(function(blob) {
+      // Create download link
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up
+      URL.revokeObjectURL(link.href);
+    }, 'image/jpeg', 0.95);
+  });
+};
 
-    html2pdf().set(options).from(element).save();
-  };
 
   return (
 
@@ -2801,7 +2806,7 @@ function App() {
             onChange={(e) => setCustomerInfo({...customerInfo, salesRep: e.target.value})}
           />
         </div>
-        <button className="generate-pdf" onClick={generatePDF}>Generate PDF</button>
+        <button className="generate-pdf" onClick={generatePDF}>Download Image</button>
       </footer>
 
     </div>
