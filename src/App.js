@@ -1083,7 +1083,6 @@ function StoneVeneers() {
       </div>
 
       {/* Contract Specifications */}
-      Replace the current styling with this:
 javascript<div className="contract-specs-section" style={{flex: '1', minWidth: '500px'}}>
   <div className="specs-header" style={{backgroundColor: '#FFFF00', color: '#000000', padding: '12px', textAlign: 'center', fontWeight: 'bold', fontSize: '16px'}}>
     CONTRACT SPECIFICATIONS BELOW
