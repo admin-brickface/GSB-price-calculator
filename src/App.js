@@ -2699,17 +2699,21 @@ function App() {
     const fileName = `${activeTab}_${customerInfo.name || 'estimate'}_${timestamp}.pdf`;
 
     const options = {
-      margin: 5,
+      margin: [5, 5, 5, 5],
       filename: fileName,
-      image: { type: 'jpeg', quality: 0.95 },
+      image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
-        scale: 3,
+        scale: 2,
         useCORS: true,
-        letterRendering: true,
-        windowWidth: 1300
+        letterRendering: true
       },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      jsPDF: { 
+        unit: 'mm', 
+        format: 'a4', 
+        orientation: 'landscape' 
+      }
     };
+
 
 
 
