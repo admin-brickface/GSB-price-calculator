@@ -1083,10 +1083,11 @@ function StoneVeneers() {
       </div>
 
       {/* Contract Specifications */}
-      <div style={{display: 'flex', gap: '30px', marginTop: '40px', alignItems: 'flex-start'}}>
-  <div className="project-calculation-section" style={{flex: '0 0 500px', marginTop: '0'}}>
-          CONTRACT SPECIFICATIONS BELOW
-          </div>
+      Replace the current styling with this:
+javascript<div className="contract-specs-section" style={{flex: '1', minWidth: '500px'}}>
+  <div className="specs-header" style={{backgroundColor: '#FFFF00', color: '#000000', padding: '12px', textAlign: 'center', fontWeight: 'bold', fontSize: '16px'}}>
+    CONTRACT SPECIFICATIONS BELOW
+  </div>
         
         <div className="specs-content">
           <ul style={{listStyleType: 'circle'}}>
