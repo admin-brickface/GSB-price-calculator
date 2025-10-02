@@ -2706,7 +2706,7 @@ function App() {
         scale: 3,
         useCORS: true,
         letterRendering: true,
-        windowWidth: 1000
+        windowWidth: 1600
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
