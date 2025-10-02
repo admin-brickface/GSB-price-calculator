@@ -2453,18 +2453,9 @@ function HousePainting() {
               {paintingWalls.map((item, idx) => (
                 <tr key={idx}>
                   <td style={{fontSize: '11px'}}>{item.name}</td>
-                  <td>
-                    <input 
-                      type="number" 
-                      value={item.sf}
-                      onChange={(e) => {
-                        const newWalls = [...paintingWalls];
-                        newWalls[idx].sf = parseFloat(e.target.value) || 0;
-                        setPaintingWalls(newWalls);
-                      }}
-                      style={{width: '60px', textAlign: 'center'}}
-                    />
-                  </td>
+                   <td style={{fontWeight: 'bold', textAlign: 'center'}}>
+                    {roundedSquares}
+                    </td>
                   <td>${item.price.toFixed(2)}</td>
                   <td className="total-price-cell">${(item.sf * item.price).toFixed(2)}</td>
                   <td style={{textAlign: 'center'}}>
