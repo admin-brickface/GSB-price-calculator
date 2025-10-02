@@ -2699,12 +2699,13 @@ function App() {
     const fileName = `${activeTab}_${customerInfo.name || 'estimate'}_${timestamp}.pdf`;
 
     const options = {
-      margin: 10,
+      margin: 5,
       filename: fileName,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 1, useCORS: true },
+      html2canvas: { scale: 0.75, useCORS: true },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
+
 
     html2pdf().set(options).from(element).save();
   };
