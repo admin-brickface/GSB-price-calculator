@@ -2458,7 +2458,9 @@ function HousePainting() {
                     {roundedSquares}
                     </td>
                   <td>${item.price.toFixed(2)}</td>
-                  <td className="total-price-cell">${(item.sf * item.price).toFixed(2)}</td>
+                  <td className="total-price-cell">
+                    {item.checked ? `$${(roundedSquares * item.price).toFixed(2)}` : '$0.00'}
+                    </td>
                   <td style={{textAlign: 'center'}}>
                     <input 
                       type="checkbox" 
