@@ -2701,10 +2701,16 @@ function App() {
     const options = {
       margin: 5,
       filename: fileName,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 0.75, useCORS: true },
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { 
+        scale: 3,
+        useCORS: true,
+        letterRendering: true,
+        windowWidth: 1000
+      },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
+
 
 
     html2pdf().set(options).from(element).save();
