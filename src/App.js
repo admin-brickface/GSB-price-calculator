@@ -2697,7 +2697,7 @@ function App() {
 
   // Use html2canvas to capture the entire content as one image
   html2canvas(element, {
-    scale: 2,
+    scale: 1,
     useCORS: true,
     allowTaint: true,
     logging: false,
