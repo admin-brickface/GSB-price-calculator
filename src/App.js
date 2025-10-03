@@ -981,7 +981,7 @@ function StoneVeneers() {
                   const miscTotal = miscellaneous.reduce((sum, item) => sum + (item.sflfq * item.price), 0);
                   const subtotal = demolitionTotal + debrisTotal + stoneItemsTotal + miscTotal;
                   const withDelivery = subtotal + 222;
-                  return (withDelivery * 0.90).toFixed(2);
+                  return withDelivery.toFixed(2);
                 })()}
               </td>
             </tr>
