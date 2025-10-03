@@ -183,13 +183,13 @@ function GuttersAndLeaders() {
 
   // Project Calculation calculations
   const totalPrice = gutterTotalPrice + leaderTotalPrice + gutterGuardTotalPrice;
-  const oneYearPrice = totalPrice * 0.90; // minus 10%
-  const oneYearDeduction = totalPrice * 0.10; // the 10% deducted
-  const thirtyDayPrice = oneYearPrice * 0.90; // minus 10% from 1 year price
-  const thirtyDayDeduction = oneYearPrice * 0.10; // the 10% deducted
-  const dayOfPrice = thirtyDayPrice * 0.97; // minus 3% from 30 day price
-  const dayOfDeduction = thirtyDayPrice * 0.03; // the 3% deducted
-  const finalSellPrice = dayOfPrice; // same as day of price
+  const oneYearPrice = totalPrice; // project subtotal (no deduction yet)
+  const oneYearDeduction = totalPrice * 0.10; // 10% of 1 year price
+  const thirtyDayPrice = oneYearPrice - oneYearDeduction; // 1 year price minus 10%
+  const thirtyDayDeduction = thirtyDayPrice * 0.10; // 10% of 30 day price
+  const dayOfPrice = thirtyDayPrice - thirtyDayDeduction; // 30 day price minus 10%
+  const dayOfDeduction = dayOfPrice * 0.03; // 3% of day of price
+  const finalSellPrice = dayOfPrice - dayOfDeduction; // day of price minus 3%
 
   return (
     <div className="gutters-and-leaders">
@@ -464,7 +464,7 @@ function GuttersAndLeaders() {
       </div>
 
       {/* Contract Specifications */}
-      <div className="contract-specs-section" style={{flex: '1', minWidth: '500px'}}>
+      <div className="contract-specs-section" style={{maxWidth: '400px', marginLeft: 'auto', marginRight: '200px'}}>
         <div className="specs-header">CONTRACT SPECIFICATIONS BELOW</div>
         
         <div className="specs-content">
@@ -1009,8 +1009,10 @@ function StoneVeneers() {
                   const miscTotal = miscellaneous.reduce((sum, item) => sum + (item.sflfq * item.price), 0);
                   const subtotal = demolitionTotal + debrisTotal + stoneItemsTotal + miscTotal;
                   const withDelivery = subtotal + 222;
-                  const oneYearPrice = withDelivery * 0.90;
-                  return (oneYearPrice * 0.90).toFixed(2);
+                  const oneYearPrice = withDelivery;
+                  const oneYearDeduction = withDelivery * 0.10;
+                  const thirtyDayPrice = oneYearPrice - oneYearDeduction;
+                  return thirtyDayPrice.toFixed(2);
                 })()}
               </td>
             </tr>
@@ -1024,8 +1026,11 @@ function StoneVeneers() {
                   const miscTotal = miscellaneous.reduce((sum, item) => sum + (item.sflfq * item.price), 0);
                   const subtotal = demolitionTotal + debrisTotal + stoneItemsTotal + miscTotal;
                   const withDelivery = subtotal + 222;
-                  const oneYearPrice = withDelivery * 0.90;
-                  return (oneYearPrice * 0.10).toFixed(2);
+                  const oneYearPrice = withDelivery;
+                  const oneYearDeduction = withDelivery * 0.10;
+                  const thirtyDayPrice = oneYearPrice - oneYearDeduction;
+                  const thirtyDayDeduction = thirtyDayPrice * 0.10;
+                  return thirtyDayDeduction.toFixed(2);
                 })()})
               </td>
             </tr>
@@ -1039,9 +1044,12 @@ function StoneVeneers() {
                   const miscTotal = miscellaneous.reduce((sum, item) => sum + (item.sflfq * item.price), 0);
                   const subtotal = demolitionTotal + debrisTotal + stoneItemsTotal + miscTotal;
                   const withDelivery = subtotal + 222;
-                  const oneYearPrice = withDelivery * 0.90;
-                  const thirtyDayPrice = oneYearPrice * 0.90;
-                  return (thirtyDayPrice * 0.97).toFixed(2);
+                  const oneYearPrice = withDelivery;
+                  const oneYearDeduction = withDelivery * 0.10;
+                  const thirtyDayPrice = oneYearPrice - oneYearDeduction;
+                  const thirtyDayDeduction = thirtyDayPrice * 0.10;
+                  const dayOfPrice = thirtyDayPrice - thirtyDayDeduction;
+                  return dayOfPrice.toFixed(2);
                 })()}
               </td>
             </tr>
@@ -1055,9 +1063,13 @@ function StoneVeneers() {
                   const miscTotal = miscellaneous.reduce((sum, item) => sum + (item.sflfq * item.price), 0);
                   const subtotal = demolitionTotal + debrisTotal + stoneItemsTotal + miscTotal;
                   const withDelivery = subtotal + 222;
-                  const oneYearPrice = withDelivery * 0.90;
-                  const thirtyDayPrice = oneYearPrice * 0.90;
-                  return (thirtyDayPrice * 0.03).toFixed(2);
+                  const oneYearPrice = withDelivery;
+                  const oneYearDeduction = withDelivery * 0.10;
+                  const thirtyDayPrice = oneYearPrice - oneYearDeduction;
+                  const thirtyDayDeduction = thirtyDayPrice * 0.10;
+                  const dayOfPrice = thirtyDayPrice - thirtyDayDeduction;
+                  const dayOfDeduction = dayOfPrice * 0.03;
+                  return dayOfDeduction.toFixed(2);
                 })()})
               </td>
             </tr>
@@ -1071,10 +1083,14 @@ function StoneVeneers() {
                   const miscTotal = miscellaneous.reduce((sum, item) => sum + (item.sflfq * item.price), 0);
                   const subtotal = demolitionTotal + debrisTotal + stoneItemsTotal + miscTotal;
                   const withDelivery = subtotal + 222;
-                  const oneYearPrice = withDelivery * 0.90;
-                  const thirtyDayPrice = oneYearPrice * 0.90;
-                  const dayOfPrice = thirtyDayPrice * 0.97;
-                  return dayOfPrice.toFixed(2);
+                  const oneYearPrice = withDelivery;
+                  const oneYearDeduction = withDelivery * 0.10;
+                  const thirtyDayPrice = oneYearPrice - oneYearDeduction;
+                  const thirtyDayDeduction = thirtyDayPrice * 0.10;
+                  const dayOfPrice = thirtyDayPrice - thirtyDayDeduction;
+                  const dayOfDeduction = dayOfPrice * 0.03;
+                  const finalSellPrice = dayOfPrice - dayOfDeduction;
+                  return finalSellPrice.toFixed(2);
                 })()}
               </td>
             </tr>
@@ -1304,13 +1320,13 @@ function StuccoPainting() {
   const riggingCost = addRiggingChecked ? 1400 : 0;
   const totalWithExtras = grandTotal + repairCost + riggingCost;
   
-  const oneYearPrice = totalWithExtras * 0.90;
-  const oneYearDeduction = totalWithExtras * 0.10;
-  const thirtyDayPrice = oneYearPrice * 0.90;
-  const thirtyDayDeduction = oneYearPrice * 0.10;
-  const dayOfPrice = thirtyDayPrice * 0.97;
-  const dayOfDeduction = thirtyDayPrice * 0.03;
-  const finalSellPrice = dayOfPrice;
+  const oneYearPrice = totalWithExtras; // project subtotal (no deduction yet)
+  const oneYearDeduction = totalWithExtras * 0.10; // 10% of 1 year price
+  const thirtyDayPrice = oneYearPrice - oneYearDeduction; // 1 year price minus 10%
+  const thirtyDayDeduction = thirtyDayPrice * 0.10; // 10% of 30 day price
+  const dayOfPrice = thirtyDayPrice - thirtyDayDeduction; // 30 day price minus 10%
+  const dayOfDeduction = dayOfPrice * 0.03; // 3% of day of price
+  const finalSellPrice = dayOfPrice - dayOfDeduction; // day of price minus 3%
 
   const wallsColumns = [
     { 
@@ -2106,13 +2122,13 @@ function HousePainting() {
   const miscTotal = miscellaneousItems.reduce((sum, item) => sum + (item.qty * item.price), 0);
 
   const grandTotal = selectedWallsTotal + trimTotal + miscTotal;
-  const oneYearPrice = grandTotal * 0.90;
-  const oneYearDeduction = grandTotal * 0.10;
-  const thirtyDayPrice = oneYearPrice * 0.90;
-  const thirtyDayDeduction = oneYearPrice * 0.10;
-  const dayOfPrice = thirtyDayPrice * 0.97;
-  const dayOfDeduction = thirtyDayPrice * 0.03;
-  const finalSellPrice = dayOfPrice;
+  const oneYearPrice = grandTotal; // project subtotal (no deduction yet)
+  const oneYearDeduction = grandTotal * 0.10; // 10% of 1 year price
+  const thirtyDayPrice = oneYearPrice - oneYearDeduction; // 1 year price minus 10%
+  const thirtyDayDeduction = thirtyDayPrice * 0.10; // 10% of 30 day price
+  const dayOfPrice = thirtyDayPrice - thirtyDayDeduction; // 30 day price minus 10%
+  const dayOfDeduction = dayOfPrice * 0.03; // 3% of day of price
+  const finalSellPrice = dayOfPrice - dayOfDeduction; // day of price minus 3%
 
   const wallsColumns = [
     { data: 0, type: 'text', className: 'location-cell', readOnly: false },
