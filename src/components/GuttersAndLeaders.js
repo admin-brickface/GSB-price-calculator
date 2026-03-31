@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { HotTable } from '@handsontable/react';
-import { gutterTypes, leaderTypes, gutterGuardTypes, calculateDiscountCascade } from '../pricing';
+import { gutterTypes, gutterGuardTypes, leaderLengths, miterSurcharge, calculateDiscountCascade } from '../pricing';
 
-// Gutters and Leaders Component (Combined)
 function GuttersAndLeaders() {
-  // Gutters Data with dropdown types
+  // Gutters grid data (Front/Right/Back/Left with type dropdown + LF)
   const [guttersData, setGuttersData] = useState([
     ['FRONT', '', ''],
     ['', '', ''],
@@ -24,27 +23,17 @@ function GuttersAndLeaders() {
     ['', '', ''],
   ]);
 
-  // Leaders Data
-  const [leadersData, setLeadersData] = useState([
-    ['FRONT', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['RIGHT', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['BACK', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['LEFT', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-  ]);
+  // Leaders: count per type per floor
+  const initialLeaderCounts = () => {
+    const counts = {};
+    gutterTypes.forEach(type => {
+      counts[type.name] = { firstFloor: 0, secondFloor: 0 };
+    });
+    return counts;
+  };
+  const [leaderCounts, setLeaderCounts] = useState(initialLeaderCounts);
 
-  // Gutter Guards Data
+  // Gutter Guards grid data
   const [gutterGuardsData, setGutterGuardsData] = useState([
     ['FRONT', '', ''],
     ['', '', ''],
@@ -64,24 +53,15 @@ function GuttersAndLeaders() {
     ['', '', ''],
   ]);
 
+  // Miters count
+  const [miterCount, setMiterCount] = useState(0);
+
   const guttersColumns = [
     { data: 0, type: 'text', readOnly: true, className: 'location-cell' },
     {
       data: 1,
       type: 'dropdown',
       source: gutterTypes.map(t => t.name),
-      strict: false,
-      allowEmpty: true
-    },
-    { data: 2, type: 'numeric' },
-  ];
-
-  const leadersColumns = [
-    { data: 0, type: 'text', readOnly: true, className: 'location-cell' },
-    {
-      data: 1,
-      type: 'dropdown',
-      source: leaderTypes.map(t => t.name),
       strict: false,
       allowEmpty: true
     },
@@ -100,17 +80,12 @@ function GuttersAndLeaders() {
     { data: 2, type: 'numeric' },
   ];
 
-  // Miscellaneous manual input state
-  const [miscLF, setMiscLF] = useState(0);
-  const [miscPrice, setMiscPrice] = useState(0);
-
-  // Calculate totals by type
+  // Calculate gutter totals by type
   const calculateTotalsByType = (data, types) => {
     const totals = {};
     types.forEach(type => {
       totals[type.name] = 0;
     });
-
     data.forEach(row => {
       const typeName = row[1];
       const lf = parseFloat(row[2]) || 0;
@@ -118,33 +93,50 @@ function GuttersAndLeaders() {
         totals[typeName] += lf;
       }
     });
-
     return totals;
   };
 
   const gutterTotals = calculateTotalsByType(guttersData, gutterTypes);
-  const leaderTotals = calculateTotalsByType(leadersData, leaderTypes);
   const gutterGuardTotals = calculateTotalsByType(gutterGuardsData, gutterGuardTypes);
 
-  // Calculate total prices
+  // Gutter total price
   const gutterTotalPrice = gutterTypes.reduce((sum, type) => {
     return sum + ((gutterTotals[type.name] || 0) * type.price);
   }, 0);
 
-  const leaderTotalPrice = leaderTypes.reduce((sum, type) => {
-    return sum + ((leaderTotals[type.name] || 0) * type.price);
-  }, 0);
+  // Leader totals and price
+  const leaderDetails = gutterTypes.map(type => {
+    const counts = leaderCounts[type.name] || { firstFloor: 0, secondFloor: 0 };
+    const firstFloorLF = counts.firstFloor * leaderLengths.firstFloor;
+    const secondFloorLF = counts.secondFloor * leaderLengths.secondFloor;
+    const totalLF = firstFloorLF + secondFloorLF;
+    const totalPrice = totalLF * type.price;
+    return { ...type, counts, firstFloorLF, secondFloorLF, totalLF, totalPrice };
+  });
 
+  const leaderTotalPrice = leaderDetails.reduce((sum, d) => sum + d.totalPrice, 0);
+
+  // Gutter guard total price
   const gutterGuardTotalPrice = gutterGuardTypes.reduce((sum, type) => {
-    if (type.name === 'Miscellaneous - Fill in') {
-      return sum + (miscLF * miscPrice);
-    }
     return sum + ((gutterGuardTotals[type.name] || 0) * type.price);
   }, 0);
 
-  // Project Calculation
-  const totalPrice = gutterTotalPrice + leaderTotalPrice + gutterGuardTotalPrice;
+  // Miters total
+  const miterTotalPrice = miterCount * miterSurcharge;
+
+  // Project calculation
+  const totalPrice = gutterTotalPrice + leaderTotalPrice + gutterGuardTotalPrice + miterTotalPrice;
   const cascade = calculateDiscountCascade(totalPrice);
+
+  const updateLeaderCount = (typeName, floor, value) => {
+    setLeaderCounts(prev => ({
+      ...prev,
+      [typeName]: {
+        ...prev[typeName],
+        [floor]: parseFloat(value) || 0
+      }
+    }));
+  };
 
   return (
     <div className="gutters-and-leaders">
@@ -167,6 +159,7 @@ function GuttersAndLeaders() {
               if (changes) {
                 const newData = [...guttersData];
                 changes.forEach(([row, prop, oldValue, newValue]) => {
+                  newData[row] = [...newData[row]];
                   newData[row][prop] = newValue;
                 });
                 setGuttersData(newData);
@@ -177,25 +170,43 @@ function GuttersAndLeaders() {
 
         <div className="table-section">
           <h3>LEADERS</h3>
-          <HotTable
-            data={leadersData}
-            columns={leadersColumns}
-            colHeaders={['Location', 'Type', 'LF']}
-            rowHeaders={false}
-            width="100%"
-            height="auto"
-            stretchH="all"
-            licenseKey="non-commercial-and-evaluation"
-            afterChange={(changes) => {
-              if (changes) {
-                const newData = [...leadersData];
-                changes.forEach(([row, prop, oldValue, newValue]) => {
-                  newData[row][prop] = newValue;
-                });
-                setLeadersData(newData);
-              }
-            }}
-          />
+          <table className="pricing-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>1st Floor</th>
+                <th>2nd Floor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {gutterTypes.map((type, idx) => (
+                <tr key={idx}>
+                  <td>{type.name}</td>
+                  <td>
+                    <input
+                      type="number"
+                      min="0"
+                      value={leaderCounts[type.name]?.firstFloor || 0}
+                      onChange={(e) => updateLeaderCount(type.name, 'firstFloor', e.target.value)}
+                      style={{width: '60px', textAlign: 'center'}}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min="0"
+                      value={leaderCounts[type.name]?.secondFloor || 0}
+                      onChange={(e) => updateLeaderCount(type.name, 'secondFloor', e.target.value)}
+                      style={{width: '60px', textAlign: 'center'}}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p style={{fontSize: '12px', color: '#666', marginTop: '5px'}}>
+            1st floor = {leaderLengths.firstFloor} LF each &nbsp;|&nbsp; 2nd floor = {leaderLengths.secondFloor} LF each
+          </p>
         </div>
 
         <div className="table-section">
@@ -213,6 +224,7 @@ function GuttersAndLeaders() {
               if (changes) {
                 const newData = [...gutterGuardsData];
                 changes.forEach(([row, prop, oldValue, newValue]) => {
+                  newData[row] = [...newData[row]];
                   newData[row][prop] = newValue;
                 });
                 setGutterGuardsData(newData);
@@ -222,13 +234,26 @@ function GuttersAndLeaders() {
         </div>
       </div>
 
+      {/* Miters Input */}
+      <div style={{marginTop: '20px', display: 'flex', alignItems: 'center', gap: '10px'}}>
+        <label style={{fontWeight: 'bold'}}>Miters:</label>
+        <input
+          type="number"
+          min="0"
+          value={miterCount}
+          onChange={(e) => setMiterCount(parseFloat(e.target.value) || 0)}
+          style={{width: '60px', textAlign: 'center'}}
+        />
+        <span style={{color: '#666'}}>x ${miterSurcharge} each = ${miterTotalPrice.toFixed(2)}</span>
+      </div>
+
       {/* Price Tables */}
       <div className="price-tables-section">
         <h2 style={{marginTop: '40px', marginBottom: '20px'}}>Price Tables</h2>
 
         {/* Gutters Price Table */}
         <div className="price-table">
-          <h3>Gutters (Standard) .27 Gauge</h3>
+          <h3>Gutters</h3>
           <table className="pricing-table">
             <thead>
               <tr>
@@ -255,25 +280,27 @@ function GuttersAndLeaders() {
 
         {/* Leaders Price Table */}
         <div className="price-table">
-          <h3>Leaders (Standard) .19 Gauge</h3>
+          <h3>Leaders</h3>
           <table className="pricing-table">
             <thead>
               <tr>
                 <th></th>
+                <th>1st Fl</th>
+                <th>2nd Fl</th>
                 <th>Total LF</th>
                 <th>Price Per Ft</th>
                 <th>Total Price</th>
               </tr>
             </thead>
             <tbody>
-              {leaderTypes.map((type, idx) => (
+              {leaderDetails.map((d, idx) => (
                 <tr key={idx}>
-                  <td>{type.name}</td>
-                  <td>{leaderTotals[type.name] || 0}</td>
-                  <td>${type.price.toFixed(2)}</td>
-                  <td className="total-price-cell">
-                    ${((leaderTotals[type.name] || 0) * type.price).toFixed(2)}
-                  </td>
+                  <td>{d.name}</td>
+                  <td>{d.counts.firstFloor} ({d.firstFloorLF} LF)</td>
+                  <td>{d.counts.secondFloor} ({d.secondFloorLF} LF)</td>
+                  <td>{d.totalLF}</td>
+                  <td>${d.price.toFixed(2)}</td>
+                  <td className="total-price-cell">${d.totalPrice.toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
@@ -296,37 +323,10 @@ function GuttersAndLeaders() {
               {gutterGuardTypes.map((type, idx) => (
                 <tr key={idx}>
                   <td>{type.name}</td>
-                  <td>
-                    {type.isManual ? (
-                      <input
-                        type="number"
-                        value={miscLF}
-                        onChange={(e) => setMiscLF(parseFloat(e.target.value) || 0)}
-                        style={{width: '60px', textAlign: 'center'}}
-                      />
-                    ) : (
-                      gutterGuardTotals[type.name] || 0
-                    )}
-                  </td>
-                  <td>
-                    {type.isManual ? (
-                      <span>
-                        $<input
-                          type="number"
-                          value={miscPrice}
-                          onChange={(e) => setMiscPrice(parseFloat(e.target.value) || 0)}
-                          style={{width: '50px', textAlign: 'center', marginLeft: '2px'}}
-                        />
-                      </span>
-                    ) : (
-                      "$" + type.price.toFixed(2)
-                    )}
-                  </td>
+                  <td>{gutterGuardTotals[type.name] || 0}</td>
+                  <td>${type.price.toFixed(2)}</td>
                   <td className="total-price-cell">
-                    ${type.isManual
-                      ? (miscLF * miscPrice).toFixed(2)
-                      : ((gutterGuardTotals[type.name] || 0) * type.price).toFixed(2)
-                    }
+                    ${((gutterGuardTotals[type.name] || 0) * type.price).toFixed(2)}
                   </td>
                 </tr>
               ))}
@@ -366,6 +366,12 @@ function GuttersAndLeaders() {
               <td className="label-cell">Gutter Guards</td>
               <td className="input-cell">
                 ${gutterGuardTotalPrice.toFixed(2)}
+              </td>
+            </tr>
+            <tr>
+              <td className="label-cell">Miters</td>
+              <td className="input-cell">
+                ${miterTotalPrice.toFixed(2)}
               </td>
             </tr>
             <tr>
@@ -429,10 +435,9 @@ function GuttersAndLeaders() {
           </ul>
           <ul>
             <li>Install gutters and leaders on entire home</li>
-            <li>5" gutters @ .27 gauge</li>
-            <li>2x3 leaders @ .19 gauge</li>
-            <li>Install metal gutter screens <span className="red-text">(if any)</span></li>
-            <li>Color is White</li>
+            <li>Available sizes: 5" and 6"</li>
+            <li>Colors: White or Colored</li>
+            <li>Gutter guard options: Hangtite or Gutter Screen <span className="red-text">(if any)</span></li>
           </ul>
         </div>
       </div>

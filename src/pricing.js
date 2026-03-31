@@ -36,34 +36,24 @@ export function calculateDiscountCascade(subtotal) {
 // Gutters & Leaders
 // ------------------------------------------------------------
 export const gutterTypes = [
-  { name: 'Gutter 5in white', price: 14.50 },
-  { name: 'Gutter 5in all colors', price: 16.75 },
-  { name: 'Gutter 6in white', price: 20 },
-  { name: 'Gutter 6in all colors', price: 21 },
-  { name: 'Extra Gauge (0.032 gauge)', price: 1.25 },
+  { name: '6" White Gutters & Leaders', price: 12.75 },
+  { name: '6" Colored Gutters & Leaders', price: 14.15 },
+  { name: '5" White Gutters & Leaders', price: 10.95 },
+  { name: '5" Colored Gutters & Leaders', price: 12.30 },
 ];
 
-export const leaderTypes = [
-  { name: 'Leaders 2x3 white', price: 13.50 },
-  { name: 'Leaders 2x3 all colors', price: 14.50 },
-  { name: 'Leader 2x3 white - PVC', price: 20 },
-  { name: 'Leaders 3x4 white', price: 16.75 },
-  { name: 'Leaders 3x4 all colors', price: 18 },
-  { name: 'Leader 3in Round Corrugated - White', price: 52.25 },
-  { name: 'Extra Gauge (0.032 gauge)', price: 1.25 },
-];
+export const leaderLengths = {
+  firstFloor: 15,
+  secondFloor: 25,
+};
+
+export const miterSurcharge = 25;
 
 export const gutterGuardTypes = [
-  { name: 'Shur-flow 5in (white)', price: 16.75 },
-  { name: 'Shur-flow 5in (black or aluminum)', price: 17.75 },
-  { name: 'Shur-flow 6in (white)', price: 17.75 },
-  { name: 'Shur-flow 6in (black or aluminum)', price: 20 },
-  { name: 'Screen 5in', price: 11.25 },
-  { name: 'Screen 6in', price: 13.50 },
-  { name: 'Leafshelter 6in - White', price: 20 },
-  { name: 'Leafshelter 6in - All Colors', price: 23.50 },
-  { name: 'Strap Hangers per LF', price: 4.50 },
-  { name: 'Miscellaneous - Fill in', price: 0, isManual: true },
+  { name: '5" Hangtite Gutter Guard', price: 14.55 },
+  { name: '6" Hangtite Gutter Guard', price: 16.36 },
+  { name: '5" Gutter Screen', price: 12.73 },
+  { name: '6" Gutter Screen', price: 14.55 },
 ];
 
 // ------------------------------------------------------------
