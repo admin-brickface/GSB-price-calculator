@@ -51,43 +51,15 @@ function App() {
         <h1>🏗️ Garden State Brickface & Siding Pricing Calculator</h1>
       </header>
 
-      <div className="tabs">
-        <button
-          className={activeTab === 'gutters' ? 'active' : ''}
-          onClick={() => setActiveTab('gutters')}
-        >
-          Gutters & Leaders
-        </button>
-        <button
-          className={activeTab === 'stone-veneers' ? 'active' : ''}
-          onClick={() => setActiveTab('stone-veneers')}
-        >
-          Stone Veneers
-        </button>
-        <button
-          className={activeTab === 'stucco-painting' ? 'active' : ''}
-          onClick={() => setActiveTab('stucco-painting')}
-        >
-          Stucco Painting
-        </button>
-        <button
-          className={activeTab === 'house-painting' ? 'active' : ''}
-           onClick={() => setActiveTab('house-painting')}
->
-          House Painting
-        </button>
-        <button
-          className={activeTab === 'window-replacement' ? 'active' : ''}
-          onClick={() => setActiveTab('window-replacement')}
-        >
-          Window Replacement
-        </button>
-        <button
-          className={activeTab === 'roofing' ? 'active' : ''}
-          onClick={() => setActiveTab('roofing')}
-        >
-          Roofing
-        </button>
+      <div className="service-selector">
+        <select value={activeTab} onChange={(e) => setActiveTab(e.target.value)}>
+          <option value="gutters">Gutters &amp; Leaders</option>
+          <option value="stone-veneers">Stone Veneers</option>
+          <option value="stucco-painting">Stucco Painting</option>
+          <option value="house-painting">House Painting</option>
+          <option value="window-replacement">Provia Endure Vinyl Replacement Windows</option>
+          <option value="roofing">Roofing</option>
+        </select>
       </div>
 
             <main ref={contentRef}>

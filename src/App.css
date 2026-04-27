@@ -23,14 +23,32 @@ header h1 {
   font-weight: 600;
 }
 
-/* Tabs */
-.tabs {
-  display: flex;
+/* Service Selector Dropdown */
+.service-selector {
   background-color: #ECF0F1;
-  padding: 0;
+  padding: 12px 20px;
   border-bottom: 2px solid #BDC3C7;
-  overflow-x: auto;
 }
+
+.service-selector select {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2C3E50;
+  background-color: #FFFFFF;
+  border: 2px solid #3498DB;
+  border-radius: 4px;
+  cursor: pointer;
+  appearance: auto;
+}
+
+.service-selector select:focus {
+  outline: none;
+  border-color: #2980B9;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
 /* Customer info that appears in PDF */
 .pdf-customer-info {
   margin-top: 40px;
@@ -51,30 +69,6 @@ header h1 {
   color: #333;
 }
 
-.tabs button {
-  flex: 1;
-  padding: 15px 20px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 500;
-  color: #2C3E50;
-  transition: all 0.3s;
-  white-space: nowrap;
-  min-width: 150px;
-}
-
-.tabs button:hover {
-  background-color: #D5DBDB;
-}
-
-.tabs button.active {
-  background-color: #FFFFFF;
-  border-bottom: 3px solid #3498DB;
-  color: #3498DB;
-  font-weight: 600;
-}
 
 /* Main content */
 main {
@@ -477,16 +471,6 @@ footer {
 }
 
 @media (max-width: 768px) {
-  .tabs {
-    overflow-x: scroll;
-  }
-  
-  .tabs button {
-    min-width: 120px;
-    font-size: 13px;
-    padding: 12px 15px;
-  }
-  
   .customer-info {
     grid-template-columns: 1fr;
   }
@@ -738,7 +722,7 @@ footer {
     display: none;
   }
   
-  .tabs {
+  .service-selector {
     display: none;
   }
   
