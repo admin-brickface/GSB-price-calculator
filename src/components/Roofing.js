@@ -7,7 +7,7 @@ import {
 } from '../pricing';
 
 function RoofingCalculator({ tier, dimensions }) {
-  const { squares } = dimensions;
+  const { squares, pitch } = dimensions;
   const [surcharge, setSurcharge] = useState(0);
 
   const productRows = tier.products.map(p => {
@@ -19,7 +19,8 @@ function RoofingCalculator({ tier, dimensions }) {
   const totalMaterial = productRows.reduce((s, r) => s + r.total, 0);
   const costPerSquare = squares > 0 ? totalMaterial / squares : 0;
   const dumpster = +(squares * roofingDumpsterPerSquare).toFixed(2);
-  const labor = +(squares * roofingLaborPerSquare).toFixed(2);
+  const pitchUpcharge = pitch > 8 ? 30 : 0;
+  const labor = +(squares * (roofingLaborPerSquare + pitchUpcharge)).toFixed(2);
   const totalCosts = totalMaterial + dumpster + labor + surcharge;
   const totalCostPerSquare = squares > 0 ? totalCosts / squares : 0;
 
@@ -159,6 +160,7 @@ function Roofing() {
     eave: 0,
     ridge: 0,
     valley: 0,
+    pitch: 0,
   });
 
   const handleDimChange = (field, value) => {
@@ -213,6 +215,16 @@ function Roofing() {
               step="0.01"
               value={dimensions.valley || ''}
               onChange={e => handleDimChange('valley', e.target.value)}
+            />
+          </label>
+          <label>
+            Predominant Roof Pitch
+            <input
+              type="number"
+              min="0"
+              step="0.5"
+              value={dimensions.pitch || ''}
+              onChange={e => handleDimChange('pitch', e.target.value)}
             />
           </label>
         </div>
