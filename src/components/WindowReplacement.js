@@ -131,12 +131,16 @@ function WindowReplacement() {
                   <td className="input-cell">{fmt(totalMaterialCost)}</td>
                 </tr>
                 <tr>
-                  <td className="label-cell">Labor</td>
-                  <td className="input-cell">{fmt(totalLaborCost)}</td>
+                  <td className="label-cell">Cost Per Window</td>
+                  <td className="input-cell">{fmt(costPerWindow)}</td>
                 </tr>
                 <tr>
                   <td className="label-cell">Dumpster</td>
                   <td className="input-cell">{fmt(dumpster)}</td>
+                </tr>
+                <tr>
+                  <td className="label-cell">Labor</td>
+                  <td className="input-cell">{fmt(totalLaborCost)}</td>
                 </tr>
                 <tr>
                   <td className="label-cell">Surcharge</td>
@@ -152,10 +156,6 @@ function WindowReplacement() {
                       className="window-surcharge-input"
                     />
                   </td>
-                </tr>
-                <tr className="window-highlight-row">
-                  <td className="label-cell">Cost Per Window</td>
-                  <td className="input-cell">{fmt(costPerWindow)}</td>
                 </tr>
               </tbody>
             </table>

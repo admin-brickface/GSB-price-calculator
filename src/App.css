@@ -574,12 +574,6 @@ footer {
   font-weight: 600;
 }
 
-.window-highlight-row td {
-  background-color: #D6EAF8;
-  font-weight: 700;
-  font-size: 15px;
-}
-
 .window-surcharge-input {
   width: 80px;
   text-align: right;
