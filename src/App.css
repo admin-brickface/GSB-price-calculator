@@ -608,6 +608,130 @@ footer {
   }
 }
 
+/* Roofing */
+.roofing h2 {
+  margin-bottom: 25px;
+  color: #2C3E50;
+  font-size: 24px;
+  border-bottom: 2px solid #3498DB;
+  padding-bottom: 10px;
+}
+
+.roofing-dimensions {
+  margin-bottom: 25px;
+  border: 1px solid #BDC3C7;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.roofing-dimensions h3 {
+  background-color: #34495E;
+  color: #FFFFFF;
+  padding: 10px;
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.roofing-dimensions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  padding: 15px;
+}
+
+.roofing-dimensions-grid label {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2C3E50;
+  gap: 5px;
+}
+
+.roofing-dimensions-grid input {
+  padding: 8px;
+  border: 1px solid #BDC3C7;
+  border-radius: 3px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.roofing-dimensions-grid input:focus {
+  outline: none;
+  border-color: #3498DB;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.roofing-sub-tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border: 1px solid #BDC3C7;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.roofing-sub-tabs button {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  background: #ECF0F1;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2C3E50;
+  transition: all 0.2s;
+  border-right: 1px solid #BDC3C7;
+}
+
+.roofing-sub-tabs button:last-child {
+  border-right: none;
+}
+
+.roofing-sub-tabs button:hover {
+  background-color: #D5DBDB;
+}
+
+.roofing-sub-tabs button.active {
+  background-color: #3498DB;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.roofing-calculator {
+  margin-bottom: 30px;
+}
+
+.roofing-price-sheet {
+  margin-top: 40px;
+  border-top: 3px solid #2C3E50;
+  padding-top: 20px;
+}
+
+.roofing-price-sheet > h3 {
+  background-color: #2C3E50;
+  color: #FFFFFF;
+  padding: 12px;
+  margin: 0 0 0 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.roofing-category-row td {
+  background-color: #34495E;
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 10px;
+}
+
+@media (max-width: 768px) {
+  .roofing-dimensions-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 /* Print styles */
 @media print {
   footer {

@@ -9,6 +9,7 @@ import StoneVeneers from './components/StoneVeneers';
 import StuccoPainting from './components/StuccoPainting';
 import HousePainting from './components/HousePainting';
 import WindowReplacement from './components/WindowReplacement';
+import Roofing from './components/Roofing';
 
 registerAllModules();
 
@@ -81,6 +82,12 @@ function App() {
         >
           Window Replacement
         </button>
+        <button
+          className={activeTab === 'roofing' ? 'active' : ''}
+          onClick={() => setActiveTab('roofing')}
+        >
+          Roofing
+        </button>
       </div>
 
             <main ref={contentRef}>
@@ -89,6 +96,7 @@ function App() {
         {activeTab === 'stucco-painting' && <StuccoPainting />}
         {activeTab === 'house-painting' && <HousePainting />}
         {activeTab === 'window-replacement' && <WindowReplacement />}
+        {activeTab === 'roofing' && <Roofing />}
 
         {/* Customer info section - will appear in PDF */}
         <div className="pdf-customer-info">

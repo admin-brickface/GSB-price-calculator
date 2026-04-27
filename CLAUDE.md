@@ -25,6 +25,7 @@ Create React App project with React 19. No router - single-page tabbed interface
 - **StuccoPainting.js** - Newer version, also incomplete. Similar wall measurements but different data structure.
 - **HousePainting.js** - Most complex tab. Walls + 6 trim tables (window trim, door trim, soffit, fascia, entry doors, garage doors). Radio-style checkbox for wall type selection. Includes rules/guidelines section.
 - **WindowReplacement.js** - Provia Endure vinyl replacement windows. Product table grouped by UI (United Inches) size bracket (0-60 through 145-156). Each product has pre-computed unit cost and labor cost. Summary computes dumpster (tiered by qty), surcharge (manual), and shows pricing at 45%/40%/35% margins with commission (10%) and net profit. No cascading discounts on this tab.
+- **Roofing.js** - Roofing calculator with shared dimension inputs (squares, eave, ridge, valley LF) and 3 sub-tabs: Patriot, Landmark, Pro. Each tier auto-calculates product quantities from dimensions. Summary/margins/final summary like windows. Roofing Prices reference table at bottom. No cascading discounts.
 
 **Key library: Handsontable** (`@handsontable/react`) - Spreadsheet-like grid component used for all measurement input tables. Registered globally in `index.js`. Uses `non-commercial-and-evaluation` license key.
 

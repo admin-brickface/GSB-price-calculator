@@ -268,3 +268,94 @@ export function calculateWindowDumpster(totalQty) {
   if (totalQty > 5) return 900;
   return totalQty * 90;
 }
+
+// ------------------------------------------------------------
+// Roofing
+// ------------------------------------------------------------
+
+export const roofingPrices = [
+  { category: 'ROOFING', items: [
+    { name: '3 BD/SQ LASALLE CT PATRIOT XL RAVEN BLACK 48 BD/PAL', price: 105.00, uom: '1 SQ' },
+    { name: '3 BD/SQ NORWOOD CT LM AR CHARCOAL BLACK LANDMARK, 48 BD/PAL', price: 123.55, uom: '1 SQ' },
+    { name: '3 BD/SQ NORWOOD CT LM PRO AR MAX DEF CHARCOAL BLACK LANDMARK, 40 BD/PAL', price: 136.95, uom: '1 SQ' },
+  ]},
+  { category: 'ICE & WATER SHIELD', items: [
+    { name: '2 SQ/RL CT WINTERGUARD ICE & WATER GRANULATED 30 RL/PAL', price: 98.00, uom: '1 RL' },
+    { name: '2 SQ/RL TOP SHIELD SECUREGRIP ICE & WATER NO BOX SELF-ADHERED, 25 RL/PAL', price: 68.00, uom: '1 RL' },
+  ]},
+  { category: 'UNDERLAYMENT', items: [
+    { name: '10 SQ/RL CT ROOFRUNNER SYNTHETIC UNDERLAYMENT 56 RL/PAL', price: 105.00, uom: '1 RL' },
+    { name: '10 SQ/RL TOP SHIELD CRAFTGRADE UDL W20 GRAY SYNTHETIC UNDERLAYMENT, 64 RL/PAL', price: 78.45, uom: '1 RL' },
+  ]},
+  { category: 'DRIP EDGE', items: [
+    { name: "10' .019 TOP SHIELD ALUM F5M DRIP EDGE 30 WHITE PREMIUM, ALUMINUM, 50 PC/CTN, BERGER", price: 8.55, uom: '1 PC' },
+  ]},
+  { category: 'STARTER SHINGLES', items: [
+    { name: '116 LF/BD CT SWIFTSTART STARTER SHINGLE 48 BD/PAL', price: 63.06, uom: '1 BD' },
+    { name: '105 LF/BD TOP SHIELD STARTER STRIP PLUS 36 BD/PAL', price: 51.35, uom: '1 BD' },
+  ]},
+  { category: 'NAILS', items: [
+    { name: '1-1/4" 7.2M/BX TOP SHIELD EG COIL ROOFING NAILS 48 BX/PAL', price: 48.00, uom: '1 BX' },
+    { name: '3/8" 5M/BX TOP SHIELD A11 STAPLES T-50', price: 8.00, uom: '1 BX' },
+    { name: '1" 2000/BX NAT STINGER EG PLASTIC CAP NAILS NATIONAL NAIL, ELECTRO GALVANIZED, 96 BX/PAL', price: 54.00, uom: '1 BX' },
+  ]},
+  { category: 'FLASHING & ACCESSORIES', items: [
+    { name: '29.6 LF/BD LASALLE CT SHADOW RIDGE XL RAVEN BLACK 48 BD/PAL', price: 65.00, uom: '1 BD' },
+    { name: '12" X 30\' NORWOOD CT SHADOW RIDGE AR CHARCOAL/MOIRE BLACK 28 BD/PAL', price: 68.00, uom: '1 BD' },
+    { name: '12" X 4\' CT FILTERED RIDGE VENT W/ NAILS 10 PC/CTN', price: 15.37, uom: '1 PC' },
+    { name: '12" X 28\' CT FILTERED ROLLED RIDGE VENT W/ NAILS 15 RL/PAL', price: 129.00, uom: '1 RL' },
+    { name: '12" X 4\' CT FILTERED INTAKE VENT EDGE 10 PC/CTN', price: 18.50, uom: '1 PC' },
+    { name: '6" X 8" .011 100/BD TOP SHIELD ALUM FLAT STEP FLASH BLACK, ALUMINUM, 5 BD/CTN', price: 47.78, uom: '1 BD' },
+    { name: '6" X 8" TOP SHIELD ALUMINUM FLAT STEP FLASHING MILL, 100 PC/BD, BERGER', price: 41.00, uom: '1 BD' },
+    { name: '5" X 5" X 8" TOP SHIELD ALUM PREBENT STEP FLASHING BLACK, ALUMINUM, 50 PC/BD', price: 40.00, uom: '1 BD' },
+    { name: '1"-4" IPS 4N1 ALUMINUM PIPE FLASHING BLACK 20 PC/CTN', price: 8.75, uom: '1 EA' },
+    { name: '11" X 5/8" X 20\' QUARRIX ATTICDEFENSE RIDGE VENT ATTIC PROTECTION, 36 RL/PAL', price: 42.75, uom: '1 RL' },
+    { name: 'HAZMAT 10.3 OZ NPC #900 SOLAR SEAL 05 CLEAR 12 TB/CTN', price: 8.95, uom: '1 TB' },
+    { name: '1170 CFM AIR VENT RM POWER ATTIC VENT W/H&T BLACK ROOF-MOUNT, W/ PRE-WIRED HUMID/THERM', price: 175.00, uom: '1 EA' },
+  ]},
+];
+
+// Each calculator tier defines its product list with qty formulas
+// sq = total roof squares, eave/ridge/valley = linear footage
+export const roofingTiers = {
+  patriot: {
+    label: 'Patriot',
+    products: [
+      { name: 'CT Patriot XL', unit: 'SQ', unitPrice: 105.00, qty: (d) => d.squares },
+      { name: 'Top Shield SecureGrip', unit: 'RL', unitPrice: 68.00, qty: (d) => Math.ceil((d.eave + d.valley) / 66) },
+      { name: 'Top Shield Craftgrade UDL', unit: 'RL', unitPrice: 78.45, qty: (d) => Math.ceil(d.squares / 10) },
+      { name: 'Top Shield Starter Strip Plus', unit: 'BD', unitPrice: 51.35, qty: (d) => Math.ceil(d.eave / 105) },
+      { name: 'CT Shadow Ridge XL', unit: 'BD', unitPrice: 65.00, qty: (d) => Math.ceil(d.ridge / 29.6) },
+      { name: 'Quarrix AtticDefense', unit: 'RL', unitPrice: 42.75, qty: (d) => Math.ceil(d.ridge / 20) },
+      { name: 'Top Shield Drip Edge', unit: 'PC', unitPrice: 8.55, qty: (d) => Math.ceil(d.eave / 10) },
+      { name: 'Coil Roofing Nails', unit: 'BX', unitPrice: 48.00, qty: (d) => Math.ceil(d.squares / 20) },
+    ],
+  },
+  landmark: {
+    label: 'Landmark',
+    products: [
+      { name: 'Landmark AR Charcoal', unit: 'SQ', unitPrice: 123.55, qty: (d) => d.squares },
+      { name: 'CT Winterguard', unit: 'RL', unitPrice: 98.00, qty: (d) => Math.ceil((d.eave + d.valley) / 66) },
+      { name: 'CT Roofrunner', unit: 'RL', unitPrice: 105.00, qty: (d) => Math.ceil(d.squares / 10) },
+      { name: 'CT Swiftstart', unit: 'BD', unitPrice: 63.06, qty: (d) => Math.ceil(d.eave / 116) },
+      { name: 'CT Shadow Ridge AR', unit: 'BD', unitPrice: 68.00, qty: (d) => Math.ceil(d.ridge / 30) },
+      { name: 'Top Shield Drip Edge', unit: 'PC', unitPrice: 8.55, qty: (d) => Math.ceil(d.eave / 10) },
+      { name: 'Coil Roofing Nails', unit: 'BX', unitPrice: 48.00, qty: (d) => Math.ceil(d.squares / 20) },
+    ],
+  },
+  pro: {
+    label: 'Pro',
+    products: [
+      { name: 'Landmark Pro', unit: 'SQ', unitPrice: 136.95, qty: (d) => d.squares },
+      { name: 'CT Winterguard', unit: 'RL', unitPrice: 98.00, qty: (d) => Math.ceil((d.eave + d.valley) / 66) },
+      { name: 'CT Roofrunner', unit: 'RL', unitPrice: 105.00, qty: (d) => Math.ceil(d.squares / 10) },
+      { name: 'CT Swiftstart', unit: 'BD', unitPrice: 63.06, qty: (d) => Math.ceil(d.eave / 116) },
+      { name: 'CT Shadow Ridge AR', unit: 'BD', unitPrice: 68.00, qty: (d) => Math.ceil(d.ridge / 30) },
+      { name: 'Top Shield Drip Edge', unit: 'PC', unitPrice: 8.55, qty: (d) => Math.ceil(d.eave / 10) },
+      { name: 'Coil Roofing Nails', unit: 'BX', unitPrice: 48.00, qty: (d) => Math.ceil(d.squares / 20) },
+    ],
+  },
+};
+
+export const roofingDumpsterPerSquare = 55;
+export const roofingLaborPerSquare = 150;
