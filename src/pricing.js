@@ -197,3 +197,74 @@ export const housePaintingMiscItems = [
 ];
 
 export const housePaintingMinimum = 5600;
+
+// ------------------------------------------------------------
+// Window Replacement
+// Provia Endure White In / White Out Vinyl Replacement Windows
+// Unit Cost = ROUNDUP(Ext.Cost + Material, 0)
+// Labor Cost from Labor Pricing table by size bracket
+// ------------------------------------------------------------
+
+export const windowProducts = [
+  { bracket: '0-60 UI', products: [
+    { name: 'Slider 0-60"', unitCost: 289, laborCost: 200 },
+    { name: 'Casement 624/625 0-54"', unitCost: 353, laborCost: 200 },
+    { name: 'Picture 0-56"', unitCost: 195, laborCost: 200 },
+    { name: 'Awning 0-60"', unitCost: 377, laborCost: 200 },
+  ]},
+  { bracket: '61-72 UI', products: [
+    { name: 'Slider 61-72"', unitCost: 338, laborCost: 200 },
+    { name: 'Casement 624/625 55-66"', unitCost: 395, laborCost: 200 },
+    { name: 'Twin Casement 55-66"', unitCost: 669, laborCost: 200 },
+    { name: 'Picture 55-66"', unitCost: 220, laborCost: 200 },
+    { name: 'Awning 61-72"', unitCost: 419, laborCost: 200 },
+  ]},
+  { bracket: '73-84 UI', products: [
+    { name: 'Slider 73-84"', unitCost: 404, laborCost: 220 },
+    { name: 'Casement 624/625 67-78"', unitCost: 421, laborCost: 220 },
+    { name: 'Twin Casement 67-78"', unitCost: 709, laborCost: 220 },
+    { name: '3-Lite Casement 67-78"', unitCost: 865, laborCost: 220 },
+    { name: 'Picture 67-78"', unitCost: 248, laborCost: 220 },
+    { name: 'Awning 73-84"', unitCost: 473, laborCost: 220 },
+  ]},
+  { bracket: '85-96 UI', products: [
+    { name: 'Slider 85-96"', unitCost: 412, laborCost: 220 },
+    { name: 'Casement 624/625 79-90"', unitCost: 475, laborCost: 220 },
+    { name: 'Twin Casement 79-90"', unitCost: 765, laborCost: 220 },
+    { name: '3-Lite Casement 79-90"', unitCost: 916, laborCost: 220 },
+    { name: 'Picture 79-90"', unitCost: 299, laborCost: 220 },
+  ]},
+  { bracket: '97-108 UI', products: [
+    { name: 'Double Hung >99 UI', unitCost: 395, laborCost: 240 },
+    { name: 'Slider 97-108"', unitCost: 453, laborCost: 240 },
+    { name: 'Casement 624/625 91-102"', unitCost: 568, laborCost: 240 },
+    { name: '3-Lite Casement 91-102"', unitCost: 966, laborCost: 240 },
+    { name: 'Picture 91-102"', unitCost: 325, laborCost: 240 },
+  ]},
+  { bracket: '109-120 UI', products: [
+    { name: 'Slider 109-120"', unitCost: 522, laborCost: 260 },
+    { name: '3-Lite Casement 103-114"', unitCost: 1012, laborCost: 260 },
+    { name: 'Picture 103-114"', unitCost: 427, laborCost: 260 },
+  ]},
+  { bracket: '121-132 UI', products: [
+    { name: 'Double Hung 102-122"', unitCost: 467, laborCost: 280 },
+    { name: 'Slider 121-132"', unitCost: 554, laborCost: 280 },
+    { name: '3-Lite Casement 115-126"', unitCost: 1097, laborCost: 280 },
+    { name: 'Picture 115-126"', unitCost: 495, laborCost: 280 },
+  ]},
+  { bracket: '133-144 UI', products: [
+    { name: '3-Lite Casement 127-138"', unitCost: 1173, laborCost: 300 },
+    { name: 'Picture 127-137"', unitCost: 646, laborCost: 300 },
+  ]},
+  { bracket: '145-156 UI', products: [
+    { name: '3-Lite Casement 139-150"', unitCost: 1221, laborCost: 320 },
+    { name: '3-Lite Casement 151-156"', unitCost: 1343, laborCost: 320 },
+  ]},
+];
+
+export function calculateWindowDumpster(totalQty) {
+  if (totalQty >= 20) return 1500;
+  if (totalQty >= 10) return 1100;
+  if (totalQty > 5) return 900;
+  return totalQty * 90;
+}

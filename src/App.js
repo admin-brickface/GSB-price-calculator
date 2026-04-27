@@ -8,6 +8,7 @@ import GuttersAndLeaders from './components/GuttersAndLeaders';
 import StoneVeneers from './components/StoneVeneers';
 import StuccoPainting from './components/StuccoPainting';
 import HousePainting from './components/HousePainting';
+import WindowReplacement from './components/WindowReplacement';
 
 registerAllModules();
 
@@ -74,6 +75,12 @@ function App() {
 >
           House Painting
         </button>
+        <button
+          className={activeTab === 'window-replacement' ? 'active' : ''}
+          onClick={() => setActiveTab('window-replacement')}
+        >
+          Window Replacement
+        </button>
       </div>
 
             <main ref={contentRef}>
@@ -81,6 +88,7 @@ function App() {
         {activeTab === 'stone-veneers' && <StoneVeneers />}
         {activeTab === 'stucco-painting' && <StuccoPainting />}
         {activeTab === 'house-painting' && <HousePainting />}
+        {activeTab === 'window-replacement' && <WindowReplacement />}
 
         {/* Customer info section - will appear in PDF */}
         <div className="pdf-customer-info">
