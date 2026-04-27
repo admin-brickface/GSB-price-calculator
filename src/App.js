@@ -91,12 +91,12 @@ function App() {
       </div>
 
             <main ref={contentRef}>
-        {activeTab === 'gutters' && <GuttersAndLeaders />}
-        {activeTab === 'stone-veneers' && <StoneVeneers />}
-        {activeTab === 'stucco-painting' && <StuccoPainting />}
-        {activeTab === 'house-painting' && <HousePainting />}
-        {activeTab === 'window-replacement' && <WindowReplacement />}
-        {activeTab === 'roofing' && <Roofing />}
+        <div style={{ display: activeTab === 'gutters' ? 'block' : 'none' }}><GuttersAndLeaders /></div>
+        <div style={{ display: activeTab === 'stone-veneers' ? 'block' : 'none' }}><StoneVeneers /></div>
+        <div style={{ display: activeTab === 'stucco-painting' ? 'block' : 'none' }}><StuccoPainting /></div>
+        <div style={{ display: activeTab === 'house-painting' ? 'block' : 'none' }}><HousePainting /></div>
+        <div style={{ display: activeTab === 'window-replacement' ? 'block' : 'none' }}><WindowReplacement /></div>
+        <div style={{ display: activeTab === 'roofing' ? 'block' : 'none' }}><Roofing /></div>
 
         {/* Customer info section - will appear in PDF */}
         <div className="pdf-customer-info">
