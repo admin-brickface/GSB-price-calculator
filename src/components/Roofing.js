@@ -7,7 +7,7 @@ import {
 } from '../pricing';
 
 function RoofingCalculator({ tier, dimensions }) {
-  const { squares, eave, ridge, valley } = dimensions;
+  const { squares } = dimensions;
   const [surcharge, setSurcharge] = useState(0);
 
   const productRows = tier.products.map(p => {
