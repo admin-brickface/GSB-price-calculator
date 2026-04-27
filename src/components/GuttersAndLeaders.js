@@ -1,27 +1,102 @@
 import React, { useState } from 'react';
-import { HotTable } from '@handsontable/react';
 import { gutterTypes, gutterGuardTypes, leaderLengths, miterSurcharge, calculateDiscountCascade } from '../pricing';
+
+const SIDES = ['FRONT', 'RIGHT', 'BACK', 'LEFT'];
+const ROWS_PER_SIDE = 4;
+
+function buildInitialGrid() {
+  const data = [];
+  SIDES.forEach(side => {
+    for (let i = 0; i < ROWS_PER_SIDE; i++) {
+      data.push([i === 0 ? side : '', '', '']);
+    }
+  });
+  return data;
+}
+
+function MeasurementGrid({ title, data, setData, typeOptions }) {
+  const updateCell = (rowIndex, colIndex, value) => {
+    setData(prev => prev.map((row, ri) =>
+      ri === rowIndex
+        ? row.map((cell, ci) => (ci === colIndex ? value : cell))
+        : row
+    ));
+  };
+
+  return (
+    <div className="table-section">
+      <h3>{title}</h3>
+      <table className="pricing-table">
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th>Type</th>
+            <th>LF</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, rowIndex) => {
+            const sideIndex = Math.floor(rowIndex / ROWS_PER_SIDE);
+            const isFirstRow = rowIndex % ROWS_PER_SIDE === 0;
+            return (
+              <tr key={rowIndex}>
+                <td
+                  style={{
+                    fontWeight: isFirstRow ? 'bold' : 'normal',
+                    minWidth: '70px',
+                    padding: '4px 8px',
+                  }}
+                >
+                  {isFirstRow ? SIDES[sideIndex] : ''}
+                </td>
+                <td style={{ padding: '2px' }}>
+                  <select
+                    value={row[1]}
+                    onChange={(e) => updateCell(rowIndex, 1, e.target.value)}
+                    style={{
+                      width: '100%',
+                      minHeight: '44px',
+                      padding: '4px 8px',
+                      fontSize: '14px',
+                    }}
+                  >
+                    <option value=""></option>
+                    {typeOptions.map((t) => (
+                      <option key={t.name} value={t.name}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td style={{ padding: '2px' }}>
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    min="0"
+                    value={row[2]}
+                    onChange={(e) => updateCell(rowIndex, 2, e.target.value)}
+                    style={{
+                      width: '100%',
+                      minHeight: '44px',
+                      padding: '4px 8px',
+                      fontSize: '14px',
+                      textAlign: 'center',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
 function GuttersAndLeaders() {
   // Gutters grid data (Front/Right/Back/Left with type dropdown + LF)
-  const [guttersData, setGuttersData] = useState([
-    ['FRONT', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['RIGHT', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['BACK', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['LEFT', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-  ]);
+  const [guttersData, setGuttersData] = useState(buildInitialGrid);
 
   // Leaders: count per type per floor
   const initialLeaderCounts = () => {
@@ -34,51 +109,10 @@ function GuttersAndLeaders() {
   const [leaderCounts, setLeaderCounts] = useState(initialLeaderCounts);
 
   // Gutter Guards grid data
-  const [gutterGuardsData, setGutterGuardsData] = useState([
-    ['FRONT', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['RIGHT', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['BACK', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['LEFT', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-    ['', '', ''],
-  ]);
+  const [gutterGuardsData, setGutterGuardsData] = useState(buildInitialGrid);
 
   // Miters count
   const [miterCount, setMiterCount] = useState(0);
-
-  const guttersColumns = [
-    { data: 0, type: 'text', readOnly: true, className: 'location-cell' },
-    {
-      data: 1,
-      type: 'dropdown',
-      source: gutterTypes.map(t => t.name),
-      strict: false,
-      allowEmpty: true
-    },
-    { data: 2, type: 'numeric' },
-  ];
-
-  const gutterGuardsColumns = [
-    { data: 0, type: 'text', readOnly: true, className: 'location-cell' },
-    {
-      data: 1,
-      type: 'dropdown',
-      source: gutterGuardTypes.map(t => t.name),
-      strict: false,
-      allowEmpty: true
-    },
-    { data: 2, type: 'numeric' },
-  ];
 
   // Calculate gutter totals by type
   const calculateTotalsByType = (data, types) => {
@@ -144,29 +178,12 @@ function GuttersAndLeaders() {
 
       {/* Measurement Tables */}
       <div className="three-column-layout">
-        <div className="table-section">
-          <h3>GUTTERS</h3>
-          <HotTable
-            data={guttersData}
-            columns={guttersColumns}
-            colHeaders={['Location', 'Type', 'LF']}
-            rowHeaders={false}
-            width="100%"
-            height="auto"
-            stretchH="all"
-            licenseKey="non-commercial-and-evaluation"
-            afterChange={(changes) => {
-              if (changes) {
-                const newData = [...guttersData];
-                changes.forEach(([row, prop, oldValue, newValue]) => {
-                  newData[row] = [...newData[row]];
-                  newData[row][prop] = newValue;
-                });
-                setGuttersData(newData);
-              }
-            }}
-          />
-        </div>
+        <MeasurementGrid
+          title="GUTTERS"
+          data={guttersData}
+          setData={setGuttersData}
+          typeOptions={gutterTypes}
+        />
 
         <div className="table-section">
           <h3>LEADERS</h3>
@@ -209,29 +226,12 @@ function GuttersAndLeaders() {
           </p>
         </div>
 
-        <div className="table-section">
-          <h3>GUTTER GUARDS</h3>
-          <HotTable
-            data={gutterGuardsData}
-            columns={gutterGuardsColumns}
-            colHeaders={['Location', 'Type', 'LF']}
-            rowHeaders={false}
-            width="100%"
-            height="auto"
-            stretchH="all"
-            licenseKey="non-commercial-and-evaluation"
-            afterChange={(changes) => {
-              if (changes) {
-                const newData = [...gutterGuardsData];
-                changes.forEach(([row, prop, oldValue, newValue]) => {
-                  newData[row] = [...newData[row]];
-                  newData[row][prop] = newValue;
-                });
-                setGutterGuardsData(newData);
-              }
-            }}
-          />
-        </div>
+        <MeasurementGrid
+          title="GUTTER GUARDS"
+          data={gutterGuardsData}
+          setData={setGutterGuardsData}
+          typeOptions={gutterGuardTypes}
+        />
       </div>
 
       {/* Miters Input */}

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { HotTable } from '@handsontable/react';
 import {
   stuccoWallPriceRanges,
   stuccoTrimPrices,
@@ -9,6 +8,58 @@ import {
   stuccoMinimums,
   calculateDiscountCascade,
 } from '../pricing';
+
+const inputStyle = {
+  minHeight: '44px',
+  padding: '8px 10px',
+  fontSize: '14px',
+  boxSizing: 'border-box',
+  width: '100%',
+  border: '1px solid #ccc',
+  borderRadius: '3px',
+};
+
+const numericInputStyle = {
+  ...inputStyle,
+  textAlign: 'right',
+};
+
+const readonlyStyle = {
+  minHeight: '44px',
+  padding: '8px 10px',
+  fontSize: '14px',
+  textAlign: 'right',
+  backgroundColor: '#f5f5f5',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+};
+
+const formulaCellStyle = {
+  minHeight: '44px',
+  padding: '8px 10px',
+  fontSize: '14px',
+  textAlign: 'center',
+  backgroundColor: '#F0F0F0',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
+const thStyle = {
+  padding: '8px 10px',
+  backgroundColor: '#f0f0f0',
+  borderBottom: '2px solid #ccc',
+  textAlign: 'center',
+  fontSize: '13px',
+  fontWeight: '600',
+};
+
+const tdStyle = {
+  padding: '2px',
+  borderBottom: '1px solid #eee',
+  verticalAlign: 'middle',
+};
 
 // Stucco Painting Component
 function StuccoPainting() {
@@ -173,23 +224,95 @@ function StuccoPainting() {
     finalSellPrice,
   } = cascade;
 
-  const wallsColumns = [
-    {
-      data: 0,
-      type: 'text',
-      className: 'location-cell',
-      readOnly: false,
-    },
-    { data: 1, type: 'numeric' },
-    { data: 2, type: 'numeric' },
-    { data: 3, type: 'numeric' },
-    { data: 4, type: 'numeric', readOnly: true },
-  ];
+  // Helper: update a wall row and recompute total
+  const updateWallCell = (rowIdx, colIdx, value) => {
+    const newData = wallsData.map((row, ri) => {
+      if (ri !== rowIdx) return row;
+      const newRow = [...row];
+      newRow[colIdx] = value;
 
-  const trimColumns = [
-    { data: 0, type: 'text' },
-    { data: 1, type: 'numeric' },
-  ];
+      // Recompute total (col 4)
+      const location = newRow[0];
+      const width = parseFloat(newRow[1]) || 0;
+      const height = parseFloat(newRow[2]) || 0;
+
+      if (location === 'Gables' || location === 'Rakes') {
+        newRow[4] = width * height * 0.5;
+      } else if (location === 'Single Dormers') {
+        newRow[4] = width * 75;
+      } else {
+        newRow[4] = width * height;
+      }
+      return newRow;
+    });
+    setWallsData(newData);
+  };
+
+  // Helper: update a trim table row
+  const updateTrimCell = (data, setData, rowIdx, colIdx, value) => {
+    const newData = data.map((row, ri) => {
+      if (ri !== rowIdx) return row;
+      const newRow = [...row];
+      newRow[colIdx] = value;
+      return newRow;
+    });
+    setData(newData);
+  };
+
+  // Compute displayed total for a wall row
+  const getWallRowTotal = (row) => {
+    const location = row[0];
+    const width = parseFloat(row[1]) || 0;
+    const height = parseFloat(row[2]) || 0;
+
+    if (location === 'Gables' || location === 'Rakes') {
+      return width * height * 0.5;
+    } else if (location === 'Single Dormers') {
+      return width * 75;
+    } else {
+      return width * height;
+    }
+  };
+
+  // Render a trim table
+  const renderTrimTable = (title, data, setData, valueLabel) => (
+    <div className="small-table">
+      <h3>{title}</h3>
+      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <thead>
+          <tr>
+            <th style={thStyle}>Location</th>
+            <th style={thStyle}>{valueLabel}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, rowIdx) => (
+            <tr key={rowIdx}>
+              <td style={tdStyle}>
+                <input
+                  type="text"
+                  value={row[0]}
+                  onChange={(e) => updateTrimCell(data, setData, rowIdx, 0, e.target.value)}
+                  style={inputStyle}
+                  placeholder=""
+                />
+              </td>
+              <td style={tdStyle}>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  value={row[1]}
+                  onChange={(e) => updateTrimCell(data, setData, rowIdx, 1, e.target.value)}
+                  style={numericInputStyle}
+                  placeholder=""
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 
   return (
     <div className="stucco-painting">
@@ -199,82 +322,92 @@ function StuccoPainting() {
         {/* Walls Table - Left Side */}
         <div className="walls-table-section">
           <h3 style={{backgroundColor: '#000000', color: '#FFFFFF', padding: '8px', textAlign: 'center', marginBottom: '0'}}>Walls</h3>
-          <HotTable
-            data={wallsData}
-            columns={wallsColumns}
-            colHeaders={['Location', 'Width', 'Height', '', 'Total SF']}
-            rowHeaders={false}
-            width="100%"
-            height="auto"
-            stretchH="all"
-            licenseKey="non-commercial-and-evaluation"
-            cells={(row, col) => {
-              const cellProperties = {};
-              const location = wallsData[row][0];
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th style={thStyle}>Location</th>
+                <th style={thStyle}>Width</th>
+                <th style={thStyle}>Height</th>
+                <th style={{...thStyle, width: '80px'}}></th>
+                <th style={thStyle}>Total SF</th>
+              </tr>
+            </thead>
+            <tbody>
+              {wallsData.map((row, rowIdx) => {
+                const location = row[0];
+                const isGableOrRake = location === 'Gables' || location === 'Rakes';
+                const isDormer = location === 'Single Dormers';
+                const total = getWallRowTotal(row);
 
-              // For Single Dormers rows, black out Height column (column 2)
-              if (location === 'Single Dormers' && col === 2) {
-                cellProperties.readOnly = true;
-                cellProperties.renderer = function(instance, td) {
-                  td.innerHTML = '';
-                  td.style.backgroundColor = '#000000';
-                  return td;
-                };
-              }
-
-              // For Single Dormers rows, show formula text in column 3
-              if (location === 'Single Dormers' && col === 3) {
-                cellProperties.readOnly = true;
-                cellProperties.renderer = function(instance, td) {
-                  td.innerHTML = 'x 75 sf =';
-                  td.style.textAlign = 'center';
-                  td.style.backgroundColor = '#F0F0F0';
-                  return td;
-                };
-              }
-
-              // For Gables/Rakes, show formula in column 3
-              if ((location === 'Gables' || location === 'Rakes') && col === 3) {
-                cellProperties.readOnly = true;
-                cellProperties.renderer = function(instance, td) {
-                  td.innerHTML = 'x .5 =';
-                  td.style.textAlign = 'center';
-                  td.style.backgroundColor = '#F0F0F0';
-                  return td;
-                };
-              }
-
-              return cellProperties;
-            }}
-            afterChange={(changes) => {
-              if (changes) {
-                const newData = [...wallsData];
-                changes.forEach(([row, prop, oldValue, newValue]) => {
-                  newData[row][prop] = newValue;
-
-                  const location = newData[row][0];
-                  const width = parseFloat(newData[row][1]) || 0;
-                  const height = parseFloat(newData[row][2]) || 0;
-                  const quantity = parseFloat(newData[row][1]) || 0; // For Single Dormers, use Width column as quantity
-
-                  if (location === 'Gables' || location === 'Rakes') {
-                    newData[row][4] = width * height * 0.5;
-                  } else if (location === 'Single Dormers') {
-                    newData[row][4] = quantity * 75;
-                  } else {
-                    newData[row][4] = width * height;
-                  }
-                });
-                setWallsData(newData);
-              }
-            }}
-          />
+                return (
+                  <tr key={rowIdx}>
+                    {/* Location */}
+                    <td style={tdStyle}>
+                      <input
+                        type="text"
+                        value={row[0]}
+                        onChange={(e) => updateWallCell(rowIdx, 0, e.target.value)}
+                        style={inputStyle}
+                        placeholder=""
+                      />
+                    </td>
+                    {/* Width (or Qty for dormers) */}
+                    <td style={tdStyle}>
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        value={row[1]}
+                        onChange={(e) => updateWallCell(rowIdx, 1, e.target.value)}
+                        style={numericInputStyle}
+                        placeholder=""
+                      />
+                    </td>
+                    {/* Height - blacked out for Single Dormers */}
+                    <td style={tdStyle}>
+                      {isDormer ? (
+                        <div style={{
+                          minHeight: '44px',
+                          backgroundColor: '#000000',
+                          borderRadius: '3px',
+                        }} />
+                      ) : (
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          value={row[2]}
+                          onChange={(e) => updateWallCell(rowIdx, 2, e.target.value)}
+                          style={numericInputStyle}
+                          placeholder=""
+                        />
+                      )}
+                    </td>
+                    {/* Formula column */}
+                    <td style={tdStyle}>
+                      {isGableOrRake ? (
+                        <div style={formulaCellStyle}>x .5 =</div>
+                      ) : isDormer ? (
+                        <div style={formulaCellStyle}>x 75 sf =</div>
+                      ) : (
+                        <div style={{ minHeight: '44px' }} />
+                      )}
+                    </td>
+                    {/* Total SF - readonly computed */}
+                    <td style={tdStyle}>
+                      <div style={readonlyStyle}>
+                        {total > 0 ? total.toFixed(2) : ''}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
           <div className="subtotal-row">Subtotal of Squares: {subtotalSquares.toFixed(2)}</div>
           <div className="outs-inputs">
-            <div>Front (Outs): (<input type="number" value={outsValues.front} onChange={(e) => setOutsValues({...outsValues, front: parseFloat(e.target.value) || 0})} style={{width: '60px'}} />)</div>
-            <div>Front Right (Outs): (<input type="number" value={outsValues.frontRight} onChange={(e) => setOutsValues({...outsValues, frontRight: parseFloat(e.target.value) || 0})} style={{width: '60px'}} />)</div>
-            <div>Rear (Outs): (<input type="number" value={outsValues.rear} onChange={(e) => setOutsValues({...outsValues, rear: parseFloat(e.target.value) || 0})} style={{width: '60px'}} />)</div>
-            <div>Front Left (Outs): (<input type="number" value={outsValues.frontLeft} onChange={(e) => setOutsValues({...outsValues, frontLeft: parseFloat(e.target.value) || 0})} style={{width: '60px'}} />)</div>
+            <div>Front (Outs): (<input type="number" inputMode="decimal" value={outsValues.front} onChange={(e) => setOutsValues({...outsValues, front: parseFloat(e.target.value) || 0})} style={{width: '60px'}} />)</div>
+            <div>Front Right (Outs): (<input type="number" inputMode="decimal" value={outsValues.frontRight} onChange={(e) => setOutsValues({...outsValues, frontRight: parseFloat(e.target.value) || 0})} style={{width: '60px'}} />)</div>
+            <div>Rear (Outs): (<input type="number" inputMode="decimal" value={outsValues.rear} onChange={(e) => setOutsValues({...outsValues, rear: parseFloat(e.target.value) || 0})} style={{width: '60px'}} />)</div>
+            <div>Front Left (Outs): (<input type="number" inputMode="decimal" value={outsValues.frontLeft} onChange={(e) => setOutsValues({...outsValues, frontLeft: parseFloat(e.target.value) || 0})} style={{width: '60px'}} />)</div>
           </div>
           <div className="total-row">Squares (Subtotal): {squaresSubtotal.toFixed(2)}</div>
           <div className="note-row">Round up to Nearest Full Square: {roundedSquares}</div>
@@ -282,149 +415,23 @@ function StuccoPainting() {
 
         {/* Right Side Tables */}
         <div className="trim-tables-section">
-          <div className="small-table">
-            <h3>Window Trim (up to 6")</h3>
-            <HotTable
-              data={windowTrimData}
-              columns={trimColumns}
-              colHeaders={['Location', 'LF']}
-              rowHeaders={false}
-              width="100%"
-              height="auto"
-              stretchH="all"
-              licenseKey="non-commercial-and-evaluation"
-              afterChange={(changes) => {
-                if (changes) {
-                  const newData = [...windowTrimData];
-                  changes.forEach(([row, prop, oldValue, newValue]) => {
-                    newData[row][prop] = newValue;
-                  });
-                  setWindowTrimData(newData);
-                }
-              }}
-            />
-            <div className="total-row">Total: {totalWindowTrim.toFixed(2)}</div>
-          </div>
+          {renderTrimTable('Window Trim (up to 6")', windowTrimData, setWindowTrimData, 'LF')}
+          <div className="total-row">Total: {totalWindowTrim.toFixed(2)}</div>
 
-          <div className="small-table">
-            <h3>Door Trim (up to 6")</h3>
-            <HotTable
-              data={doorTrimData}
-              columns={trimColumns}
-              colHeaders={['Location', 'LF']}
-              rowHeaders={false}
-              width="100%"
-              height="auto"
-              stretchH="all"
-              licenseKey="non-commercial-and-evaluation"
-              afterChange={(changes) => {
-                if (changes) {
-                  const newData = [...doorTrimData];
-                  changes.forEach(([row, prop, oldValue, newValue]) => {
-                    newData[row][prop] = newValue;
-                  });
-                  setDoorTrimData(newData);
-                }
-              }}
-            />
-            <div className="total-row">Total: {totalDoorTrim.toFixed(2)}</div>
-          </div>
+          {renderTrimTable('Door Trim (up to 6")', doorTrimData, setDoorTrimData, 'LF')}
+          <div className="total-row">Total: {totalDoorTrim.toFixed(2)}</div>
 
-          <div className="small-table">
-            <h3>Soffit (up to 12")</h3>
-            <HotTable
-              data={soffitData}
-              columns={trimColumns}
-              colHeaders={['Location', 'LF']}
-              rowHeaders={false}
-              width="100%"
-              height="auto"
-              stretchH="all"
-              licenseKey="non-commercial-and-evaluation"
-              afterChange={(changes) => {
-                if (changes) {
-                  const newData = [...soffitData];
-                  changes.forEach(([row, prop, oldValue, newValue]) => {
-                    newData[row][prop] = newValue;
-                  });
-                  setSoffitData(newData);
-                }
-              }}
-            />
-            <div className="total-row">Total: {totalSoffit.toFixed(2)}</div>
-          </div>
+          {renderTrimTable('Soffit (up to 12")', soffitData, setSoffitData, 'LF')}
+          <div className="total-row">Total: {totalSoffit.toFixed(2)}</div>
 
-          <div className="small-table">
-            <h3>Fascia (up to 8")</h3>
-            <HotTable
-              data={fasciaData}
-              columns={trimColumns}
-              colHeaders={['Location', 'LF']}
-              rowHeaders={false}
-              width="100%"
-              height="auto"
-              stretchH="all"
-              licenseKey="non-commercial-and-evaluation"
-              afterChange={(changes) => {
-                if (changes) {
-                  const newData = [...fasciaData];
-                  changes.forEach(([row, prop, oldValue, newValue]) => {
-                    newData[row][prop] = newValue;
-                  });
-                  setFasciaData(newData);
-                }
-              }}
-            />
-            <div className="total-row">Total: {totalFascia.toFixed(2)}</div>
-          </div>
+          {renderTrimTable('Fascia (up to 8")', fasciaData, setFasciaData, 'LF')}
+          <div className="total-row">Total: {totalFascia.toFixed(2)}</div>
 
-          <div className="small-table">
-            <h3>Quoins (per 1 side only)</h3>
-            <HotTable
-              data={quoinsData}
-              columns={trimColumns}
-              colHeaders={['Location', 'Quantity']}
-              rowHeaders={false}
-              width="100%"
-              height="auto"
-              stretchH="all"
-              licenseKey="non-commercial-and-evaluation"
-              afterChange={(changes) => {
-                if (changes) {
-                  const newData = [...quoinsData];
-                  changes.forEach(([row, prop, oldValue, newValue]) => {
-                    newData[row][prop] = newValue;
-                  });
-                  setQuoinsData(newData);
-                }
-              }}
-            />
-            <div className="total-row">Total: {totalQuoins.toFixed(2)}</div>
-          </div>
+          {renderTrimTable('Quoins (per 1 side only)', quoinsData, setQuoinsData, 'Quantity')}
+          <div className="total-row">Total: {totalQuoins.toFixed(2)}</div>
 
-          <div className="small-table">
-            <h3>Other Trim If Any</h3>
-            <HotTable
-              data={otherTrimData}
-              columns={trimColumns}
-              colHeaders={['Location', 'Quantity']}
-              rowHeaders={false}
-              width="100%"
-              height="auto"
-              stretchH="all"
-              licenseKey="non-commercial-and-evaluation"
-              afterChange={(changes) => {
-                if (changes) {
-                  const newData = [...otherTrimData];
-                  changes.forEach(([row, prop, oldValue, newValue]) => {
-                    newData[row][prop] = newValue;
-                  });
-                  setOtherTrimData(newData);
-                }
-              }}
-            />
-            <div className="total-row">Total</div>
-          </div>
+          {renderTrimTable('Other Trim If Any', otherTrimData, setOtherTrimData, 'Quantity')}
+          <div className="total-row">Total</div>
         </div>
       </div>
 
@@ -639,13 +646,14 @@ function StuccoPainting() {
                   <td>
                     <input
                       type="number"
+                      inputMode="decimal"
                       value={caulkingLF[idx]}
                       onChange={(e) => {
                         const newCaulking = [...caulkingLF];
                         newCaulking[idx] = parseFloat(e.target.value) || 0;
                         setCaulkingLF(newCaulking);
                       }}
-                      style={{width: '60px', textAlign: 'center'}}
+                      style={{width: '60px', textAlign: 'center', minHeight: '44px', padding: '8px'}}
                     />
                   </td>
                   <td>${item.price.toFixed(2)}</td>
@@ -677,6 +685,7 @@ function StuccoPainting() {
                   <td>
                     <input
                       type="number"
+                      inputMode="decimal"
                       value={item.qty}
                       onChange={(e) => {
                         const newItems = miscellaneousItems.map((mi, i) =>
@@ -684,7 +693,7 @@ function StuccoPainting() {
                         );
                         setMiscellaneousItems(newItems);
                       }}
-                      style={{width: '60px', textAlign: 'center'}}
+                      style={{width: '60px', textAlign: 'center', minHeight: '44px', padding: '8px'}}
                     />
                   </td>
                   <td>${item.price.toFixed(2)}</td>

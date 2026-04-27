@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { HotTable } from '@handsontable/react';
 import {
   demolitionItems,
   debrisRemovalItems,
@@ -8,6 +7,36 @@ import {
   stoneJobMinimums,
   calculateDiscountCascade,
 } from '../pricing';
+
+const inputStyles = {
+  text: {
+    width: '100%',
+    minHeight: '44px',
+    padding: '8px',
+    border: '1px solid #ccc',
+    boxSizing: 'border-box',
+    fontSize: '14px',
+  },
+  number: {
+    width: '100%',
+    minHeight: '44px',
+    padding: '8px',
+    border: '1px solid #ccc',
+    boxSizing: 'border-box',
+    fontSize: '14px',
+    textAlign: 'right',
+  },
+  computed: {
+    width: '100%',
+    minHeight: '44px',
+    padding: '8px',
+    border: '1px solid #ccc',
+    boxSizing: 'border-box',
+    fontSize: '14px',
+    textAlign: 'right',
+    backgroundColor: '#f0f0f0',
+  },
+};
 
 function StoneVeneers() {
   // Stone Flats Data
@@ -127,29 +156,110 @@ function StoneVeneers() {
   const subtotal = demolitionTotal + debrisTotal + stoneItemsTotal + miscTotal;
   const cascade = calculateDiscountCascade(subtotal + stoneItemPrices.deliveryFee);
 
-  const stoneFlatsColumns = [
-    { data: 0, type: 'text' },
-    { data: 1, type: 'numeric' },
-    { data: 2, type: 'numeric' },
-    { data: 3, type: 'numeric', readOnly: true },
-  ];
+  // Helper to update a cell in an array-of-arrays state
+  const updateCell = (data, setData, rowIdx, colIdx, value) => {
+    const newData = data.map((row, ri) =>
+      ri === rowIdx ? row.map((cell, ci) => (ci === colIdx ? value : cell)) : [...row]
+    );
+    // Auto-compute total column for 4-column tables (width * height)
+    if (newData[rowIdx].length === 4 && (colIdx === 1 || colIdx === 2)) {
+      const width = parseFloat(newData[rowIdx][1]) || 0;
+      const height = parseFloat(newData[rowIdx][2]) || 0;
+      newData[rowIdx][3] = width * height;
+    }
+    setData(newData);
+  };
 
-  const stoneCornersColumns = [
-    { data: 0, type: 'text' },
-    { data: 1, type: 'numeric' },
-  ];
+  const renderFourColTable = (headers, data, setData) => (
+    <table className="pricing-table" style={{width: '100%', borderCollapse: 'collapse'}}>
+      <thead>
+        <tr>
+          {headers.map((h, i) => (
+            <th key={i} style={{padding: '6px', border: '1px solid #ccc', backgroundColor: '#f5f5f5', fontSize: '13px'}}>
+              {h}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row, rowIdx) => {
+          const computedTotal = (parseFloat(row[1]) || 0) * (parseFloat(row[2]) || 0);
+          return (
+            <tr key={rowIdx}>
+              <td style={{padding: '2px', border: '1px solid #ccc'}}>
+                <input
+                  type="text"
+                  value={row[0]}
+                  onChange={(e) => updateCell(data, setData, rowIdx, 0, e.target.value)}
+                  style={inputStyles.text}
+                />
+              </td>
+              <td style={{padding: '2px', border: '1px solid #ccc'}}>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  value={row[1]}
+                  onChange={(e) => updateCell(data, setData, rowIdx, 1, e.target.value)}
+                  style={inputStyles.number}
+                />
+              </td>
+              <td style={{padding: '2px', border: '1px solid #ccc'}}>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  value={row[2]}
+                  onChange={(e) => updateCell(data, setData, rowIdx, 2, e.target.value)}
+                  style={inputStyles.number}
+                />
+              </td>
+              <td style={{padding: '2px', border: '1px solid #ccc'}}>
+                <div style={inputStyles.computed}>
+                  {computedTotal || ''}
+                </div>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
 
-  const stoneSillsColumns = [
-    { data: 0, type: 'text' },
-    { data: 1, type: 'numeric' },
-  ];
-
-  const outsColumns = [
-    { data: 0, type: 'text' },
-    { data: 1, type: 'numeric' },
-    { data: 2, type: 'numeric' },
-    { data: 3, type: 'numeric', readOnly: true },
-  ];
+  const renderTwoColTable = (headers, data, setData) => (
+    <table className="pricing-table" style={{width: '100%', borderCollapse: 'collapse'}}>
+      <thead>
+        <tr>
+          {headers.map((h, i) => (
+            <th key={i} style={{padding: '6px', border: '1px solid #ccc', backgroundColor: '#f5f5f5', fontSize: '13px'}}>
+              {h}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row, rowIdx) => (
+          <tr key={rowIdx}>
+            <td style={{padding: '2px', border: '1px solid #ccc'}}>
+              <input
+                type="text"
+                value={row[0]}
+                onChange={(e) => updateCell(data, setData, rowIdx, 0, e.target.value)}
+                style={inputStyles.text}
+              />
+            </td>
+            <td style={{padding: '2px', border: '1px solid #ccc'}}>
+              <input
+                type="number"
+                inputMode="decimal"
+                value={row[1]}
+                onChange={(e) => updateCell(data, setData, rowIdx, 1, e.target.value)}
+                style={inputStyles.number}
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 
   return (
     <div className="stone-veneers">
@@ -159,28 +269,7 @@ function StoneVeneers() {
       <div className="three-column-layout">
         <div className="table-section">
           <h3>STONE FLATS</h3>
-          <HotTable
-            data={stoneFlatsData}
-            columns={stoneFlatsColumns}
-            colHeaders={['Location', 'Width', 'Height', 'Total SF']}
-            rowHeaders={false}
-            width="100%"
-            height="auto"
-            stretchH="all"
-            licenseKey="non-commercial-and-evaluation"
-            afterChange={(changes) => {
-              if (changes) {
-                const newData = [...stoneFlatsData];
-                changes.forEach(([row, prop, oldValue, newValue]) => {
-                  newData[row][prop] = newValue;
-                  const width = parseFloat(newData[row][1]) || 0;
-                  const height = parseFloat(newData[row][2]) || 0;
-                  newData[row][3] = width * height;
-                });
-                setStoneFlatsData(newData);
-              }
-            }}
-          />
+          {renderFourColTable(['Location', 'Width', 'Height', 'Total SF'], stoneFlatsData, setStoneFlatsData)}
           <div className="subtotal-row">Flats SF Subtotal: {flatsSubtotal.toFixed(2)}</div>
           <div className="deduct-row">
             Deduct Outs: ({totalOuts.toFixed(2)})
@@ -190,25 +279,7 @@ function StoneVeneers() {
 
         <div className="table-section">
           <h3>STONE CORNERS</h3>
-          <HotTable
-            data={stoneCornersData}
-            columns={stoneCornersColumns}
-            colHeaders={['Location', 'LF']}
-            rowHeaders={false}
-            width="100%"
-            height="auto"
-            stretchH="all"
-            licenseKey="non-commercial-and-evaluation"
-            afterChange={(changes) => {
-              if (changes) {
-                const newData = [...stoneCornersData];
-                changes.forEach(([row, prop, oldValue, newValue]) => {
-                  newData[row][prop] = newValue;
-                });
-                setStoneCornersData(newData);
-              }
-            }}
-          />
+          {renderTwoColTable(['Location', 'LF'], stoneCornersData, setStoneCornersData)}
           <div className="subtotal-row">Subtotal: {cornersSubtotal.toFixed(2)}</div>
           <div className="note-row">IF ODD # ROUND UP TO NEAREST EVEN FOOT</div>
           <div className="total-row">Total Corners: {totalCorners}</div>
@@ -216,25 +287,7 @@ function StoneVeneers() {
 
         <div className="table-section">
           <h3>STONE SILLS</h3>
-          <HotTable
-            data={stoneSillsData}
-            columns={stoneSillsColumns}
-            colHeaders={['Location', 'LF']}
-            rowHeaders={false}
-            width="100%"
-            height="auto"
-            stretchH="all"
-            licenseKey="non-commercial-and-evaluation"
-            afterChange={(changes) => {
-              if (changes) {
-                const newData = [...stoneSillsData];
-                changes.forEach(([row, prop, oldValue, newValue]) => {
-                  newData[row][prop] = newValue;
-                });
-                setStoneSillsData(newData);
-              }
-            }}
-          />
+          {renderTwoColTable(['Location', 'LF'], stoneSillsData, setStoneSillsData)}
           <div className="subtotal-row">Subtotal: {sillsSubtotal.toFixed(2)}</div>
           <div className="note-row">IF ODD # ROUND UP TO NEAREST EVEN FOOT</div>
           <div className="total-row">Total Sills: {totalSills}</div>
@@ -245,28 +298,7 @@ function StoneVeneers() {
       <div className="two-column-layout" style={{marginTop: '30px'}}>
         <div className="table-section">
           <h3>OUTS (TAKE 100% OUTS)</h3>
-          <HotTable
-            data={outsData}
-            columns={outsColumns}
-            colHeaders={['Location', 'Width', 'Height', 'Total']}
-            rowHeaders={false}
-            width="100%"
-            height="auto"
-            stretchH="all"
-            licenseKey="non-commercial-and-evaluation"
-            afterChange={(changes) => {
-              if (changes) {
-                const newData = [...outsData];
-                changes.forEach(([row, prop, oldValue, newValue]) => {
-                  newData[row][prop] = newValue;
-                  const width = parseFloat(newData[row][1]) || 0;
-                  const height = parseFloat(newData[row][2]) || 0;
-                  newData[row][3] = width * height;
-                });
-                setOutsData(newData);
-              }
-            }}
-          />
+          {renderFourColTable(['Location', 'Width', 'Height', 'Total'], outsData, setOutsData)}
           <div className="total-row">Total Outs: ({totalOuts.toFixed(2)})</div>
         </div>
 

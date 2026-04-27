@@ -1,6 +1,4 @@
 import React, { useState, useRef } from 'react';
-import 'handsontable/dist/handsontable.full.css';
-import { registerAllModules } from 'handsontable/registry';
 import html2canvas from 'html2canvas';
 import './App.css';
 
@@ -10,8 +8,6 @@ import StuccoPainting from './components/StuccoPainting';
 import HousePainting from './components/HousePainting';
 import WindowReplacement from './components/WindowReplacement';
 import Roofing from './components/Roofing';
-
-registerAllModules();
 
 function App() {
   const [activeTab, setActiveTab] = useState('gutters');
