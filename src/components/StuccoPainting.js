@@ -162,6 +162,10 @@ function StuccoPainting() {
     stuccoMiscItems.map(item => ({ ...item, qty: 0 }))
   );
 
+  const [customMiscItems, setCustomMiscItems] = useState([
+    { name: '', unit: '', qty: 0, price: 0 },
+  ]);
+
   const [repairChecked, setRepairChecked] = useState(false);
   const [addRiggingChecked, setAddRiggingChecked] = useState(false);
 
@@ -208,8 +212,9 @@ function StuccoPainting() {
   const trimTotal = (totalWindowTrim + totalDoorTrim) * stuccoTrimPrices.windowDoorTrim + totalSoffit * stuccoTrimPrices.soffit + totalFascia * stuccoTrimPrices.fascia + totalQuoins * stuccoTrimPrices.quoins;
   const caulkingTotal = caulkingLF.reduce((sum, lf, idx) => sum + (lf * stuccoCaulkingTypes[idx].price), 0);
   const miscTotal = miscellaneousItems.reduce((sum, item) => sum + (item.qty * item.price), 0);
+  const customMiscTotal = customMiscItems.reduce((sum, item) => sum + ((parseFloat(item.qty) || 0) * (parseFloat(item.price) || 0)), 0);
 
-  const grandTotal = wallsTotal + trimTotal + caulkingTotal + miscTotal;
+  const grandTotal = wallsTotal + trimTotal + caulkingTotal + miscTotal + customMiscTotal;
   const repairCost = repairChecked ? stuccoExtras.repair : 0;
   const riggingCost = addRiggingChecked ? stuccoExtras.rigging : 0;
   const cascade = calculateDiscountCascade(grandTotal + repairCost + riggingCost);
@@ -670,11 +675,11 @@ function StuccoPainting() {
           <table className="pricing-table">
             <thead>
               <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>PRICE</th>
-                <th>TOTAL</th>
+                <th>Item</th>
+                <th>Unit</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
               </tr>
             </thead>
             <tbody>
@@ -686,22 +691,32 @@ function StuccoPainting() {
                     <input
                       type="number"
                       inputMode="decimal"
-                      value={item.qty}
+                      value={item.qty || ''}
                       onChange={(e) => {
                         const newItems = miscellaneousItems.map((mi, i) =>
                           i === idx ? { ...mi, qty: parseFloat(e.target.value) || 0 } : mi
                         );
                         setMiscellaneousItems(newItems);
                       }}
-                      style={{width: '60px', textAlign: 'center', minHeight: '44px', padding: '8px'}}
+                      style={{width: '60px', textAlign: 'center'}}
                     />
                   </td>
                   <td>${item.price.toFixed(2)}</td>
                   <td className="total-price-cell">${(item.qty * item.price).toFixed(2)}</td>
                 </tr>
               ))}
+              {customMiscItems.map((item, idx) => (
+                <tr key={`custom-${idx}`}>
+                  <td><input type="text" placeholder="Item name" value={item.name} onChange={(e) => { const updated = customMiscItems.map((c, i) => i === idx ? { ...c, name: e.target.value } : c); setCustomMiscItems(updated); }} style={{width: '100%', minHeight: '40px'}} /></td>
+                  <td><input type="text" placeholder="Unit" value={item.unit} onChange={(e) => { const updated = customMiscItems.map((c, i) => i === idx ? { ...c, unit: e.target.value } : c); setCustomMiscItems(updated); }} style={{width: '60px', minHeight: '40px', textAlign: 'center'}} /></td>
+                  <td><input type="number" inputMode="decimal" value={item.qty || ''} onChange={(e) => { const updated = customMiscItems.map((c, i) => i === idx ? { ...c, qty: e.target.value } : c); setCustomMiscItems(updated); }} style={{width: '60px', textAlign: 'center'}} /></td>
+                  <td><input type="number" inputMode="decimal" value={item.price || ''} onChange={(e) => { const updated = customMiscItems.map((c, i) => i === idx ? { ...c, price: e.target.value } : c); setCustomMiscItems(updated); }} style={{width: '80px', textAlign: 'center'}} /></td>
+                  <td className="total-price-cell">${((parseFloat(item.qty) || 0) * (parseFloat(item.price) || 0)).toFixed(2)}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
+          <button onClick={() => setCustomMiscItems([...customMiscItems, { name: '', unit: '', qty: 0, price: 0 }])} style={{marginTop: '8px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer', border: '1px solid #BDC3C7', borderRadius: '4px', backgroundColor: '#ECF0F1'}}>+ Add Item</button>
         </div>
 
         {/* Minimums */}

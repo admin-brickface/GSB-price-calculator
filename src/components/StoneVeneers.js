@@ -106,6 +106,10 @@ function StoneVeneers() {
     stoneMiscItems.map(item => ({ ...item, sflfq: 0 }))
   );
 
+  const [customMiscItems, setCustomMiscItems] = useState([
+    { name: '', unit: '', qty: 0, price: 0 },
+  ]);
+
   // Calculations
   const calculateFlatsSubtotal = () => {
     return stoneFlatsData.reduce((sum, row) => {
@@ -126,7 +130,9 @@ function StoneVeneers() {
   const flatsSubtotal = calculateFlatsSubtotal();
   const totalOuts = calculateTotalOuts();
   const deductOuts = totalOuts; // Automatically use Total Outs
-  const totalFlats = flatsSubtotal - deductOuts;
+  const boxSize = 33;
+  const rawFlats = flatsSubtotal - deductOuts;
+  const totalFlats = rawFlats > 0 ? Math.ceil(rawFlats / boxSize) * boxSize : 0;
 
   const calculateCornersSubtotal = () => {
     return stoneCornersData.reduce((sum, row) => {
@@ -136,7 +142,7 @@ function StoneVeneers() {
   };
 
   const cornersSubtotal = calculateCornersSubtotal();
-  const totalCorners = Math.ceil(cornersSubtotal);
+  const totalCorners = cornersSubtotal > 0 ? Math.ceil(cornersSubtotal / boxSize) * boxSize : 0;
 
   const calculateSillsSubtotal = () => {
     return stoneSillsData.reduce((sum, row) => {
@@ -146,14 +152,15 @@ function StoneVeneers() {
   };
 
   const sillsSubtotal = calculateSillsSubtotal();
-  const totalSills = Math.ceil(sillsSubtotal);
+  const totalSills = sillsSubtotal > 0 ? Math.ceil(sillsSubtotal / boxSize) * boxSize : 0;
 
   // Project Calculation totals
   const demolitionTotal = demolition.reduce((sum, item) => sum + (item.perSquare * item.price), 0);
   const debrisTotal = debrisRemoval.reduce((sum, item) => sum + (item.quantity * item.price), 0);
   const stoneItemsTotal = (totalFlats * stoneItemPrices.flats) + (totalCorners * stoneItemPrices.corners) + (totalSills * stoneItemPrices.sills);
   const miscTotal = miscellaneous.reduce((sum, item) => sum + (item.sflfq * item.price), 0);
-  const subtotal = demolitionTotal + debrisTotal + stoneItemsTotal + miscTotal;
+  const customMiscTotal = customMiscItems.reduce((sum, item) => sum + ((parseFloat(item.qty) || 0) * (parseFloat(item.price) || 0)), 0);
+  const subtotal = demolitionTotal + debrisTotal + stoneItemsTotal + miscTotal + customMiscTotal;
   const cascade = calculateDiscountCascade(subtotal + stoneItemPrices.deliveryFee);
 
   // Helper to update a cell in an array-of-arrays state
@@ -442,8 +449,9 @@ function StoneVeneers() {
           <table className="pricing-table">
             <thead>
               <tr>
-                <th></th>
-                <th>SF / LF / Q</th>
+                <th>Item</th>
+                <th>Unit</th>
+                <th>Qty</th>
                 <th>Price</th>
                 <th>Sub-Total</th>
               </tr>
@@ -452,18 +460,19 @@ function StoneVeneers() {
               {miscellaneous.map((item, idx) => (
                 <tr key={idx}>
                   <td>{item.name}</td>
+                  <td>{item.unit}</td>
                   <td>
-                    {item.unit}:
                     <input
                       type="number"
-                      value={item.sflfq}
+                      inputMode="decimal"
+                      value={item.sflfq || ''}
                       onChange={(e) => {
                         const newMisc = miscellaneous.map((m, i) =>
                           i === idx ? { ...m, sflfq: parseFloat(e.target.value) || 0 } : m
                         );
                         setMiscellaneous(newMisc);
                       }}
-                      style={{width: '50px', textAlign: 'center', marginLeft: '5px'}}
+                      style={{width: '60px', textAlign: 'center'}}
                     />
                   </td>
                   <td>${item.price.toFixed(2)}</td>
@@ -472,8 +481,69 @@ function StoneVeneers() {
                   </td>
                 </tr>
               ))}
+              {customMiscItems.map((item, idx) => (
+                <tr key={`custom-${idx}`}>
+                  <td>
+                    <input
+                      type="text"
+                      placeholder="Item name"
+                      value={item.name}
+                      onChange={(e) => {
+                        const updated = customMiscItems.map((c, i) => i === idx ? { ...c, name: e.target.value } : c);
+                        setCustomMiscItems(updated);
+                      }}
+                      style={{width: '100%', minHeight: '40px'}}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      placeholder="Unit"
+                      value={item.unit}
+                      onChange={(e) => {
+                        const updated = customMiscItems.map((c, i) => i === idx ? { ...c, unit: e.target.value } : c);
+                        setCustomMiscItems(updated);
+                      }}
+                      style={{width: '60px', minHeight: '40px', textAlign: 'center'}}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      value={item.qty || ''}
+                      onChange={(e) => {
+                        const updated = customMiscItems.map((c, i) => i === idx ? { ...c, qty: e.target.value } : c);
+                        setCustomMiscItems(updated);
+                      }}
+                      style={{width: '60px', textAlign: 'center'}}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      value={item.price || ''}
+                      onChange={(e) => {
+                        const updated = customMiscItems.map((c, i) => i === idx ? { ...c, price: e.target.value } : c);
+                        setCustomMiscItems(updated);
+                      }}
+                      style={{width: '80px', textAlign: 'center'}}
+                    />
+                  </td>
+                  <td className="total-price-cell">
+                    ${((parseFloat(item.qty) || 0) * (parseFloat(item.price) || 0)).toFixed(2)}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
+          <button
+            onClick={() => setCustomMiscItems([...customMiscItems, { name: '', unit: '', qty: 0, price: 0 }])}
+            style={{marginTop: '8px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer', border: '1px solid #BDC3C7', borderRadius: '4px', backgroundColor: '#ECF0F1'}}
+          >
+            + Add Item
+          </button>
         </div>
 
         {/* Job Minimums */}

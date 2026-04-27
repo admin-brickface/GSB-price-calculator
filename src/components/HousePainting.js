@@ -282,6 +282,10 @@ function HousePainting() {
     housePaintingMiscItems.map(item => ({ ...item, qty: 0 }))
   );
 
+  const [customMiscItems, setCustomMiscItems] = useState([
+    { name: '', unit: '', qty: 0, price: 0 },
+  ]);
+
   // Calculate totals
   const calculateWallsSubtotal = () => {
     return wallsData.reduce((sum, row) => {
@@ -316,8 +320,9 @@ function HousePainting() {
     roundedSquares * paintingWalls.find(w => w.checked).price : 0;
   const trimTotal = totalWindowTrim * housePaintingTrimPrices.windowTrim + totalDoorTrim * housePaintingTrimPrices.doorTrim + totalFascia * housePaintingTrimPrices.fascia + totalSoffit * housePaintingTrimPrices.soffit + shuttersRemove * housePaintingTrimPrices.shuttersRemove + shuttersPaint * housePaintingTrimPrices.shuttersPaint + totalEntryDoors * housePaintingTrimPrices.entryDoor + totalGarageDoors * housePaintingTrimPrices.garageDoor;
   const miscTotal = miscellaneousItems.reduce((sum, item) => sum + (item.qty * item.price), 0);
+  const customMiscTotal = customMiscItems.reduce((sum, item) => sum + ((parseFloat(item.qty) || 0) * (parseFloat(item.price) || 0)), 0);
 
-  const cascade = calculateDiscountCascade(selectedWallsTotal + trimTotal + miscTotal);
+  const cascade = calculateDiscountCascade(selectedWallsTotal + trimTotal + miscTotal + customMiscTotal);
 
   return (
     <div className="house-painting">
@@ -577,37 +582,48 @@ function HousePainting() {
           <table className="pricing-table">
             <thead>
               <tr>
-                <th></th>
-                <th>Quantity</th>
-                <th>Price Per Unit</th>
-                <th>TOTAL</th>
+                <th>Item</th>
+                <th>Unit</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
               </tr>
             </thead>
             <tbody>
               {miscellaneousItems.map((item, idx) => (
                 <tr key={idx}>
                   <td style={{fontSize: '11px'}}>{item.name}</td>
+                  <td>{item.unit}</td>
                   <td>
-                    {item.unit}
                     <input
                       type="number"
                       inputMode="decimal"
-                      value={item.qty}
+                      value={item.qty || ''}
                       onChange={(e) => {
                         const newItems = miscellaneousItems.map((it, i) =>
                           i === idx ? { ...it, qty: parseFloat(e.target.value) || 0 } : it
                         );
                         setMiscellaneousItems(newItems);
                       }}
-                      style={{width: '60px', textAlign: 'center', marginLeft: '5px', minHeight: '44px', padding: '8px'}}
+                      style={{width: '60px', textAlign: 'center'}}
                     />
                   </td>
                   <td>${item.price.toFixed(2)}</td>
                   <td className="total-price-cell">${(item.qty * item.price).toFixed(2)}</td>
                 </tr>
               ))}
+              {customMiscItems.map((item, idx) => (
+                <tr key={`custom-${idx}`}>
+                  <td><input type="text" placeholder="Item name" value={item.name} onChange={(e) => { const updated = customMiscItems.map((c, i) => i === idx ? { ...c, name: e.target.value } : c); setCustomMiscItems(updated); }} style={{width: '100%', minHeight: '40px'}} /></td>
+                  <td><input type="text" placeholder="Unit" value={item.unit} onChange={(e) => { const updated = customMiscItems.map((c, i) => i === idx ? { ...c, unit: e.target.value } : c); setCustomMiscItems(updated); }} style={{width: '60px', minHeight: '40px', textAlign: 'center'}} /></td>
+                  <td><input type="number" inputMode="decimal" value={item.qty || ''} onChange={(e) => { const updated = customMiscItems.map((c, i) => i === idx ? { ...c, qty: e.target.value } : c); setCustomMiscItems(updated); }} style={{width: '60px', textAlign: 'center'}} /></td>
+                  <td><input type="number" inputMode="decimal" value={item.price || ''} onChange={(e) => { const updated = customMiscItems.map((c, i) => i === idx ? { ...c, price: e.target.value } : c); setCustomMiscItems(updated); }} style={{width: '80px', textAlign: 'center'}} /></td>
+                  <td className="total-price-cell">${((parseFloat(item.qty) || 0) * (parseFloat(item.price) || 0)).toFixed(2)}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
+          <button onClick={() => setCustomMiscItems([...customMiscItems, { name: '', unit: '', qty: 0, price: 0 }])} style={{marginTop: '8px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer', border: '1px solid #BDC3C7', borderRadius: '4px', backgroundColor: '#ECF0F1'}}>+ Add Item</button>
         </div>
 
         {/* Job Minimums */}

@@ -158,8 +158,14 @@ function GuttersAndLeaders() {
   // Miters total
   const miterTotalPrice = miterCount * miterSurcharge;
 
+  // Custom miscellaneous items
+  const [customMiscItems, setCustomMiscItems] = useState([
+    { name: '', unit: '', qty: 0, price: 0 },
+  ]);
+  const customMiscTotal = customMiscItems.reduce((sum, item) => sum + ((parseFloat(item.qty) || 0) * (parseFloat(item.price) || 0)), 0);
+
   // Project calculation
-  const totalPrice = gutterTotalPrice + leaderTotalPrice + gutterGuardTotalPrice + miterTotalPrice;
+  const totalPrice = gutterTotalPrice + leaderTotalPrice + gutterGuardTotalPrice + miterTotalPrice + customMiscTotal;
   const cascade = calculateDiscountCascade(totalPrice);
 
   const updateLeaderCount = (typeName, floor, value) => {
@@ -333,6 +339,57 @@ function GuttersAndLeaders() {
             </tbody>
           </table>
         </div>
+
+        {/* Miscellaneous Items */}
+        <div className="price-table">
+          <h3>MISCELLANEOUS</h3>
+          <table className="pricing-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Unit</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Sub-Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customMiscItems.map((item, idx) => (
+                <tr key={idx}>
+                  <td>
+                    <input type="text" placeholder="Item name" value={item.name}
+                      onChange={(e) => { const updated = customMiscItems.map((c, i) => i === idx ? { ...c, name: e.target.value } : c); setCustomMiscItems(updated); }}
+                      style={{width: '100%', minHeight: '40px'}} />
+                  </td>
+                  <td>
+                    <input type="text" placeholder="Unit" value={item.unit}
+                      onChange={(e) => { const updated = customMiscItems.map((c, i) => i === idx ? { ...c, unit: e.target.value } : c); setCustomMiscItems(updated); }}
+                      style={{width: '60px', minHeight: '40px', textAlign: 'center'}} />
+                  </td>
+                  <td>
+                    <input type="number" inputMode="decimal" value={item.qty || ''}
+                      onChange={(e) => { const updated = customMiscItems.map((c, i) => i === idx ? { ...c, qty: e.target.value } : c); setCustomMiscItems(updated); }}
+                      style={{width: '60px', textAlign: 'center'}} />
+                  </td>
+                  <td>
+                    <input type="number" inputMode="decimal" value={item.price || ''}
+                      onChange={(e) => { const updated = customMiscItems.map((c, i) => i === idx ? { ...c, price: e.target.value } : c); setCustomMiscItems(updated); }}
+                      style={{width: '80px', textAlign: 'center'}} />
+                  </td>
+                  <td className="total-price-cell">
+                    ${((parseFloat(item.qty) || 0) * (parseFloat(item.price) || 0)).toFixed(2)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <button
+            onClick={() => setCustomMiscItems([...customMiscItems, { name: '', unit: '', qty: 0, price: 0 }])}
+            style={{marginTop: '8px', padding: '8px 16px', fontSize: '13px', cursor: 'pointer', border: '1px solid #BDC3C7', borderRadius: '4px', backgroundColor: '#ECF0F1'}}
+          >
+            + Add Item
+          </button>
+        </div>
       </div>
 
       {/* Project Calculation */}
@@ -372,6 +429,12 @@ function GuttersAndLeaders() {
               <td className="label-cell">Miters</td>
               <td className="input-cell">
                 ${miterTotalPrice.toFixed(2)}
+              </td>
+            </tr>
+            <tr>
+              <td className="label-cell">Miscellaneous</td>
+              <td className="input-cell">
+                ${customMiscTotal.toFixed(2)}
               </td>
             </tr>
             <tr>
