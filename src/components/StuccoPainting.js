@@ -65,34 +65,34 @@ const tdStyle = {
 function StuccoPainting() {
   // Walls Data - with pre-filled location labels
   const [wallsData, setWallsData] = useState([
-    ['Front', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['Gables', '', '', '', ''],
-    ['Rakes', '', '', '', ''],
-    ['Single Dormers', '', '', '', ''],
-    ['Front Right', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['Gables', '', '', '', ''],
-    ['Rakes', '', '', '', ''],
-    ['Single Dormers', '', '', '', ''],
-    ['Rear', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['Gables', '', '', '', ''],
-    ['Rakes', '', '', '', ''],
-    ['Single Dormers', '', '', '', ''],
-    ['Front Left', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['', '', '', '', ''],
-    ['Gables', '', '', '', ''],
-    ['Rakes', '', '', '', ''],
-    ['Single Dormers', '', '', '', ''],
+    ['Front', '', '', '', '', 'above'],
+    ['', '', '', '', '', 'above'],
+    ['', '', '', '', '', 'above'],
+    ['', '', '', '', '', 'above'],
+    ['Gables', '', '', '', '', 'above'],
+    ['Rakes', '', '', '', '', 'above'],
+    ['Single Dormers', '', '', '', '', 'above'],
+    ['Front Right', '', '', '', '', 'above'],
+    ['', '', '', '', '', 'above'],
+    ['', '', '', '', '', 'above'],
+    ['', '', '', '', '', 'above'],
+    ['Gables', '', '', '', '', 'above'],
+    ['Rakes', '', '', '', '', 'above'],
+    ['Single Dormers', '', '', '', '', 'above'],
+    ['Rear', '', '', '', '', 'above'],
+    ['', '', '', '', '', 'above'],
+    ['', '', '', '', '', 'above'],
+    ['', '', '', '', '', 'above'],
+    ['Gables', '', '', '', '', 'above'],
+    ['Rakes', '', '', '', '', 'above'],
+    ['Single Dormers', '', '', '', '', 'above'],
+    ['Front Left', '', '', '', '', 'above'],
+    ['', '', '', '', '', 'above'],
+    ['', '', '', '', '', 'above'],
+    ['', '', '', '', '', 'above'],
+    ['Gables', '', '', '', '', 'above'],
+    ['Rakes', '', '', '', '', 'above'],
+    ['Single Dormers', '', '', '', '', 'above'],
   ]);
 
   const [windowTrimData, setWindowTrimData] = useState([
@@ -170,28 +170,24 @@ function StuccoPainting() {
   const [addRiggingChecked, setAddRiggingChecked] = useState(false);
   const [greenSkyChecked, setGreenSkyChecked] = useState([false, false, false, false, false]);
 
-  // Calculate totals
-  const calculateWallsSubtotal = () => {
-    return wallsData.reduce((sum, row) => {
-      const location = row[0];
-      const width = parseFloat(row[1]) || 0;
-      const height = parseFloat(row[2]) || 0;
-
-      if (location === 'Gables' || location === 'Rakes') {
-        return sum + (width * height * 0.5);
-      } else if (location === 'Single Dormers') {
-        // For Single Dormers, Width column is used as quantity
-        return sum + (width * 75);
-      } else {
-        return sum + (width * height);
-      }
-    }, 0);
+  // Calculate totals — split by above/below 8" selection per row
+  const getRowSF = (row) => {
+    const location = row[0];
+    const width = parseFloat(row[1]) || 0;
+    const height = parseFloat(row[2]) || 0;
+    if (location === 'Gables' || location === 'Rakes') return width * height * 0.5;
+    if (location === 'Single Dormers') return width * 75;
+    return width * height;
   };
 
-  const subtotalSquares = calculateWallsSubtotal();
+  const aboveSubtotal = wallsData.reduce((sum, row) => (row[5] === 'above' ? sum + getRowSF(row) : sum), 0);
+  const belowSubtotal = wallsData.reduce((sum, row) => (row[5] === 'below' ? sum + getRowSF(row) : sum), 0);
+
+  const subtotalSquares = aboveSubtotal + belowSubtotal;
   const totalOuts = outsValues.front + outsValues.frontRight + outsValues.rear + outsValues.frontLeft;
   const squaresSubtotal = subtotalSquares - totalOuts;
-  const roundedSquares = Math.ceil(squaresSubtotal);
+  const roundedAbove = Math.ceil(Math.max(0, aboveSubtotal - totalOuts));
+  const roundedBelow = Math.ceil(belowSubtotal);
 
   const totalWindowTrim = windowTrimData.reduce((sum, row) => sum + (parseFloat(row[1]) || 0), 0);
   const totalDoorTrim = doorTrimData.reduce((sum, row) => sum + (parseFloat(row[1]) || 0), 0);
@@ -200,16 +196,16 @@ function StuccoPainting() {
   const totalQuoins = quoinsData.reduce((sum, row) => sum + (parseFloat(row[1]) || 0), 0);
 
   // Calculate price totals
-  const getWallsPrice = () => {
+  const getPriceForSF = (sf, priceKey) => {
     for (let i = 0; i < stuccoWallPriceRanges.length; i++) {
-      if (roundedSquares >= stuccoWallPriceRanges[i].range[0] && roundedSquares <= stuccoWallPriceRanges[i].range[1]) {
-        return roundedSquares * stuccoWallPriceRanges[i].priceAbove;
+      if (sf >= stuccoWallPriceRanges[i].range[0] && sf <= stuccoWallPriceRanges[i].range[1]) {
+        return sf * stuccoWallPriceRanges[i][priceKey];
       }
     }
     return 0;
   };
 
-  const wallsTotal = getWallsPrice();
+  const wallsTotal = getPriceForSF(roundedAbove, 'priceAbove') + getPriceForSF(roundedBelow, 'priceBelow');
   const trimTotal = (totalWindowTrim + totalDoorTrim) * stuccoTrimPrices.windowDoorTrim + totalSoffit * stuccoTrimPrices.soffit + totalFascia * stuccoTrimPrices.fascia + totalQuoins * stuccoTrimPrices.quoins;
   const caulkingTotal = caulkingLF.reduce((sum, lf, idx) => sum + (lf * stuccoCaulkingTypes[idx].price), 0);
   const miscTotal = miscellaneousItems.reduce((sum, item) => sum + (item.qty * item.price), 0);
@@ -252,6 +248,15 @@ function StuccoPainting() {
       return newRow;
     });
     setWallsData(newData);
+  };
+
+  const updateWallCategory = (rowIdx, value) => {
+    setWallsData(prev => prev.map((row, ri) => {
+      if (ri !== rowIdx) return row;
+      const newRow = [...row];
+      newRow[5] = value;
+      return newRow;
+    }));
   };
 
   // Helper: update a trim table row
@@ -335,6 +340,7 @@ function StuccoPainting() {
                 <th style={thStyle}>Width</th>
                 <th style={thStyle}>Height</th>
                 <th style={{...thStyle, width: '80px'}}></th>
+                <th style={{...thStyle, width: '100px'}}>Category</th>
                 <th style={thStyle}>Total SF</th>
               </tr>
             </thead>
@@ -397,6 +403,17 @@ function StuccoPainting() {
                         <div style={{ minHeight: '44px' }} />
                       )}
                     </td>
+                    {/* Above / Below 8" category */}
+                    <td style={tdStyle}>
+                      <select
+                        value={row[5] || 'above'}
+                        onChange={(e) => updateWallCategory(rowIdx, e.target.value)}
+                        style={{...inputStyle, minWidth: '90px'}}
+                      >
+                        <option value="above">Above 8"</option>
+                        <option value="below">Below 8"</option>
+                      </select>
+                    </td>
                     {/* Total SF - readonly computed */}
                     <td style={tdStyle}>
                       <div style={readonlyStyle}>
@@ -416,7 +433,8 @@ function StuccoPainting() {
             <div>Front Left (Outs): (<input type="number" inputMode="decimal" value={outsValues.frontLeft} onChange={(e) => setOutsValues({...outsValues, frontLeft: parseFloat(e.target.value) || 0})} style={{width: '60px'}} />)</div>
           </div>
           <div className="total-row">Squares (Subtotal): {squaresSubtotal.toFixed(2)}</div>
-          <div className="note-row">Round up to Nearest Full Square: {roundedSquares}</div>
+          <div className="note-row">Above 8" — Rounded: {roundedAbove}</div>
+          <div className="note-row">Below 8" — Rounded: {roundedBelow}</div>
         </div>
 
         {/* Right Side Tables */}
@@ -525,12 +543,12 @@ function StuccoPainting() {
             </thead>
             <tbody>
               {[
-                { range: '200 - 499', price: stuccoWallPriceRanges[0].priceAbove, sf: roundedSquares >= 200 && roundedSquares <= 499 ? roundedSquares : 0 },
-                { range: '500 - 999', price: stuccoWallPriceRanges[1].priceAbove, sf: roundedSquares >= 500 && roundedSquares <= 999 ? roundedSquares : 0 },
-                { range: '1000 - 1699', price: stuccoWallPriceRanges[2].priceAbove, sf: roundedSquares >= 1000 && roundedSquares <= 1699 ? roundedSquares : 0 },
-                { range: '1700 - 2999', price: stuccoWallPriceRanges[3].priceAbove, sf: roundedSquares >= 1700 && roundedSquares <= 2999 ? roundedSquares : 0 },
-                { range: '3000 - 4499', price: stuccoWallPriceRanges[4].priceAbove, sf: roundedSquares >= 3000 && roundedSquares <= 4499 ? roundedSquares : 0 },
-                { range: 'Above 4500', price: stuccoWallPriceRanges[5].priceAbove, sf: roundedSquares >= 4500 ? roundedSquares : 0 },
+                { range: '200 - 499', price: stuccoWallPriceRanges[0].priceAbove, sf: roundedAbove >= 200 && roundedAbove <= 499 ? roundedAbove : 0 },
+                { range: '500 - 999', price: stuccoWallPriceRanges[1].priceAbove, sf: roundedAbove >= 500 && roundedAbove <= 999 ? roundedAbove : 0 },
+                { range: '1000 - 1699', price: stuccoWallPriceRanges[2].priceAbove, sf: roundedAbove >= 1000 && roundedAbove <= 1699 ? roundedAbove : 0 },
+                { range: '1700 - 2999', price: stuccoWallPriceRanges[3].priceAbove, sf: roundedAbove >= 1700 && roundedAbove <= 2999 ? roundedAbove : 0 },
+                { range: '3000 - 4499', price: stuccoWallPriceRanges[4].priceAbove, sf: roundedAbove >= 3000 && roundedAbove <= 4499 ? roundedAbove : 0 },
+                { range: 'Above 4500', price: stuccoWallPriceRanges[5].priceAbove, sf: roundedAbove >= 4500 ? roundedAbove : 0 },
               ].map((row, idx) => (
                 <tr key={idx}>
                   <td style={{fontSize: '10px'}}>
@@ -566,12 +584,12 @@ function StuccoPainting() {
             </thead>
             <tbody>
               {[
-                { range: '200 - 499', price: stuccoWallPriceRanges[0].priceBelow, sf: roundedSquares >= 200 && roundedSquares <= 499 ? roundedSquares : 0 },
-                { range: '500 - 999', price: stuccoWallPriceRanges[1].priceBelow, sf: roundedSquares >= 500 && roundedSquares <= 999 ? roundedSquares : 0 },
-                { range: '1000 - 1699', price: stuccoWallPriceRanges[2].priceBelow, sf: roundedSquares >= 1000 && roundedSquares <= 1699 ? roundedSquares : 0 },
-                { range: '1700 - 2999', price: stuccoWallPriceRanges[3].priceBelow, sf: roundedSquares >= 1700 && roundedSquares <= 2999 ? roundedSquares : 0 },
-                { range: '3000 - 4499', price: stuccoWallPriceRanges[4].priceBelow, sf: roundedSquares >= 3000 && roundedSquares <= 4499 ? roundedSquares : 0 },
-                { range: 'Above 4500', price: stuccoWallPriceRanges[5].priceBelow, sf: roundedSquares >= 4500 ? roundedSquares : 0 },
+                { range: '200 - 499', price: stuccoWallPriceRanges[0].priceBelow, sf: roundedBelow >= 200 && roundedBelow <= 499 ? roundedBelow : 0 },
+                { range: '500 - 999', price: stuccoWallPriceRanges[1].priceBelow, sf: roundedBelow >= 500 && roundedBelow <= 999 ? roundedBelow : 0 },
+                { range: '1000 - 1699', price: stuccoWallPriceRanges[2].priceBelow, sf: roundedBelow >= 1000 && roundedBelow <= 1699 ? roundedBelow : 0 },
+                { range: '1700 - 2999', price: stuccoWallPriceRanges[3].priceBelow, sf: roundedBelow >= 1700 && roundedBelow <= 2999 ? roundedBelow : 0 },
+                { range: '3000 - 4499', price: stuccoWallPriceRanges[4].priceBelow, sf: roundedBelow >= 3000 && roundedBelow <= 4499 ? roundedBelow : 0 },
+                { range: 'Above 4500', price: stuccoWallPriceRanges[5].priceBelow, sf: roundedBelow >= 4500 ? roundedBelow : 0 },
               ].map((row, idx) => (
                 <tr key={idx}>
                   <td style={{fontSize: '10px'}}>
