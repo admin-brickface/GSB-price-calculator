@@ -215,6 +215,7 @@ function WindowReplacement() {
               <tr>
                 <th style={{ width: '40px', textAlign: 'center' }}></th>
                 <th>GreenSky Plan Name</th>
+                <th style={{ textAlign: 'center' }}>Months</th>
                 <th style={{ textAlign: 'right' }}>Monthly Payment</th>
                 <th style={{ textAlign: 'right' }}>Financed Amount</th>
               </tr>
@@ -246,6 +247,7 @@ function WindowReplacement() {
                         />
                       </td>
                       <td className="label-cell">{plan.name}</td>
+                      <td className="input-cell" style={{ textAlign: 'center' }}>{plan.term}</td>
                       <td className="input-cell">{fmt((sp.totalSale * (1 + plan.pct)) / plan.term)}</td>
                       <td className="input-cell">{fmt(sp.totalSale * (1 + plan.pct))}</td>
                     </tr>

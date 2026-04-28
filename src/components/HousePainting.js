@@ -694,6 +694,7 @@ function HousePainting() {
             <tr>
               <th style={{width: '40px', textAlign: 'center'}}></th>
               <th>GreenSky Plan Name</th>
+              <th style={{textAlign: 'center'}}>Months</th>
               <th style={{textAlign: 'right'}}>Monthly Payment</th>
               <th style={{textAlign: 'right'}}>Financed Amount</th>
             </tr>
@@ -716,6 +717,7 @@ function HousePainting() {
                   />
                 </td>
                 <td className="label-cell">{plan.name}</td>
+                <td className="input-cell" style={{textAlign: 'center'}}>{plan.term}</td>
                 <td className="input-cell">${((cascade.oneYearPrice * (1 + plan.pct)) / plan.term).toFixed(2)}</td>
                 <td className="input-cell">${(cascade.oneYearPrice * (1 + plan.pct)).toFixed(2)}</td>
               </tr>
