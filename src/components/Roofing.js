@@ -9,6 +9,7 @@ import {
 function RoofingCalculator({ tier, dimensions }) {
   const { squares, pitch } = dimensions;
   const [surcharge, setSurcharge] = useState(0);
+  const [greenSkyChecked, setGreenSkyChecked] = useState(() => Array(3).fill(null).map(() => Array(5).fill(false)));
 
   const productRows = tier.products.map(p => {
     const qty = squares > 0 ? p.qty(dimensions) : 0;
@@ -144,6 +145,55 @@ function RoofingCalculator({ tier, dimensions }) {
                   <td className="input-cell" style={{ color: '#C0392B' }}>{fmt(sp.commission)}</td>
                   <td className="input-cell" style={{ color: '#27AE60', fontWeight: 700 }}>{fmt(sp.netProfit)}</td>
                 </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* GreenSky Financing */}
+        <div className="window-final-summary" style={{ marginTop: '20px' }}>
+          <h3>GreenSky Financing</h3>
+          <table className="calculation-table">
+            <thead>
+              <tr>
+                <th style={{ width: '40px', textAlign: 'center' }}></th>
+                <th>GreenSky Plan Name</th>
+                <th style={{ textAlign: 'right' }}>GreenSky Plan Fee</th>
+                <th style={{ textAlign: 'right' }}>Financed Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sellPrices.map((sp, mi) => (
+                <React.Fragment key={sp.label}>
+                  <tr>
+                    <td colSpan={4} className="label-cell" style={{ fontWeight: 'bold', backgroundColor: '#f0f0f0' }}>
+                      At {sp.label} Margin — Total Sale: {fmt(sp.totalSale)}
+                    </td>
+                  </tr>
+                  {[
+                    { name: 'GreenSky Plan 6124', pct: 0.125 },
+                    { name: 'GreenSky Plan 3108', pct: 0.078 },
+                    { name: 'GreenSky Plan 4158', pct: 0.065 },
+                    { name: 'GreenSky Plan 3068', pct: 0.05 },
+                    { name: 'GreenSky Plan 9991', pct: 0 },
+                  ].map((plan, pi) => (
+                    <tr key={pi}>
+                      <td style={{ textAlign: 'center' }}>
+                        <input
+                          type="checkbox"
+                          checked={greenSkyChecked[mi][pi]}
+                          onChange={() => setGreenSkyChecked(prev =>
+                            prev.map((row, r) => r === mi ? row.map((v, c) => c === pi ? !v : v) : row)
+                          )}
+                          style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                        />
+                      </td>
+                      <td className="label-cell">{plan.name}</td>
+                      <td className="input-cell">{fmt(sp.totalSale * plan.pct)}</td>
+                      <td className="input-cell">{fmt(sp.totalSale * (1 + plan.pct))}</td>
+                    </tr>
+                  ))}
+                </React.Fragment>
               ))}
             </tbody>
           </table>
