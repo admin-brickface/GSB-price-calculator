@@ -215,7 +215,7 @@ function WindowReplacement() {
               <tr>
                 <th style={{ width: '40px', textAlign: 'center' }}></th>
                 <th>GreenSky Plan Name</th>
-                <th style={{ textAlign: 'right' }}>GreenSky Plan Fee</th>
+                <th style={{ textAlign: 'right' }}>Monthly Payment</th>
                 <th style={{ textAlign: 'right' }}>Financed Amount</th>
               </tr>
             </thead>
@@ -228,11 +228,11 @@ function WindowReplacement() {
                     </td>
                   </tr>
                   {[
-                    { name: 'GreenSky Plan 6124 - 12.50%', pct: 0.125 },
-                    { name: 'GreenSky Plan 3108 - 7.80%', pct: 0.078 },
-                    { name: 'GreenSky Plan 4158 - 6.50%', pct: 0.065 },
-                    { name: 'GreenSky Plan 3068 - 5.00%', pct: 0.05 },
-                    { name: 'GreenSky Plan 9991 - 0%', pct: 0 },
+                    { name: 'GreenSky Plan 6124 - 12.50%', pct: 0.125, term: 24 },
+                    { name: 'GreenSky Plan 3108 - 7.80%', pct: 0.078, term: 84 },
+                    { name: 'GreenSky Plan 4158 - 6.50%', pct: 0.065, term: 84 },
+                    { name: 'GreenSky Plan 3068 - 5.00%', pct: 0.05, term: 84 },
+                    { name: 'GreenSky Plan 9991 - 0%', pct: 0, term: 120 },
                   ].map((plan, pi) => (
                     <tr key={pi}>
                       <td style={{ textAlign: 'center' }}>
@@ -246,7 +246,7 @@ function WindowReplacement() {
                         />
                       </td>
                       <td className="label-cell">{plan.name}</td>
-                      <td className="input-cell">{fmt(sp.totalSale * plan.pct)}</td>
+                      <td className="input-cell">{fmt((sp.totalSale * (1 + plan.pct)) / plan.term)}</td>
                       <td className="input-cell">{fmt(sp.totalSale * (1 + plan.pct))}</td>
                     </tr>
                   ))}
