@@ -162,6 +162,7 @@ function GuttersAndLeaders() {
   const [customMiscItems, setCustomMiscItems] = useState([
     { name: '', unit: '', qty: 0, price: 0 },
   ]);
+  const [greenSkyChecked, setGreenSkyChecked] = useState([false, false, false]);
   const customMiscTotal = customMiscItems.reduce((sum, item) => sum + ((parseFloat(item.qty) || 0) * (parseFloat(item.price) || 0)), 0);
 
   // Project calculation
@@ -485,6 +486,39 @@ function GuttersAndLeaders() {
         <div className="red-notice" style={{marginTop: '10px'}}>
           50% deposit required for all gutter and leader projects
         </div>
+
+        {/* GreenSky Financing */}
+        <table className="calculation-table" style={{marginTop: '16px'}}>
+          <thead>
+            <tr>
+              <th style={{width: '40px', textAlign: 'center'}}></th>
+              <th>GreenSky Plan Name</th>
+              <th style={{textAlign: 'right'}}>GreenSky Plan Fee</th>
+              <th style={{textAlign: 'right'}}>Financed Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { name: 'GreenSky Plan 6160', pct: 0.23 },
+              { name: 'GreenSky Plan 4158', pct: 0.065 },
+              { name: 'GreenSky Plan 3068', pct: 0.05 },
+            ].map((plan, i) => (
+              <tr key={i}>
+                <td style={{textAlign: 'center'}}>
+                  <input
+                    type="checkbox"
+                    checked={greenSkyChecked[i]}
+                    onChange={() => setGreenSkyChecked(prev => prev.map((v, j) => j === i ? !v : v))}
+                    style={{width: '20px', height: '20px', cursor: 'pointer'}}
+                  />
+                </td>
+                <td className="label-cell">{plan.name}</td>
+                <td className="input-cell">${(cascade.oneYearPrice * plan.pct).toFixed(2)}</td>
+                <td className="input-cell">${(cascade.oneYearPrice * (1 + plan.pct)).toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Contract Specifications */}
