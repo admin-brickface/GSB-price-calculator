@@ -228,11 +228,11 @@ function WindowReplacement() {
                     </td>
                   </tr>
                   {[
-                    { name: 'GreenSky Plan 6124', pct: 0.125 },
-                    { name: 'GreenSky Plan 3108', pct: 0.078 },
-                    { name: 'GreenSky Plan 4158', pct: 0.065 },
-                    { name: 'GreenSky Plan 3068', pct: 0.05 },
-                    { name: 'GreenSky Plan 9991', pct: 0 },
+                    { name: 'GreenSky Plan 6124 - 12.50%', pct: 0.125 },
+                    { name: 'GreenSky Plan 3108 - 7.80%', pct: 0.078 },
+                    { name: 'GreenSky Plan 4158 - 6.50%', pct: 0.065 },
+                    { name: 'GreenSky Plan 3068 - 5.00%', pct: 0.05 },
+                    { name: 'GreenSky Plan 9991 - 0%', pct: 0 },
                   ].map((plan, pi) => (
                     <tr key={pi}>
                       <td style={{ textAlign: 'center' }}>
