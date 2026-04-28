@@ -168,7 +168,7 @@ function StuccoPainting() {
 
   const [repairChecked, setRepairChecked] = useState(false);
   const [addRiggingChecked, setAddRiggingChecked] = useState(false);
-  const [greenSkyChecked, setGreenSkyChecked] = useState([false, false, false]);
+  const [greenSkyChecked, setGreenSkyChecked] = useState([false, false, false, false, false]);
 
   // Calculate totals
   const calculateWallsSubtotal = () => {
@@ -822,9 +822,11 @@ function StuccoPainting() {
           </thead>
           <tbody>
             {[
-              { name: 'GreenSky Plan 6160', pct: 0.23 },
+              { name: 'GreenSky Plan 6124', pct: 0.125 },
+              { name: 'GreenSky Plan 3108', pct: 0.078 },
               { name: 'GreenSky Plan 4158', pct: 0.065 },
               { name: 'GreenSky Plan 3068', pct: 0.05 },
+              { name: 'GreenSky Plan 9991', pct: 0 },
             ].map((plan, i) => (
               <tr key={i}>
                 <td style={{textAlign: 'center'}}>
