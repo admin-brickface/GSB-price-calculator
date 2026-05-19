@@ -364,35 +364,49 @@ export const roofingLaborPerSquare = 150;
 // Masonry
 // ------------------------------------------------------------
 
+// unit: 'SF' = auto-filled from totalScaffoldArea × price
+//        'LF' = manual linear ft input × price
+//        'flat' = flat rate, manual qty input
 export const masonryScaffoldingTiers = [
-  { name: 'Standard', pricePerSF: 0 },
-  { name: 'Moderate', pricePerSF: 0 },
-  { name: 'Difficult', pricePerSF: 0 },
-  { name: 'Very Difficult', pricePerSF: 0 },
+  { name: 'Ideal',                                                              pricePerUnit: 4,    unit: 'SF'   },
+  { name: 'Average',                                                            pricePerUnit: 5,    unit: 'SF'   },
+  { name: 'Difficult',                                                          pricePerUnit: 9,    unit: 'SF'   },
+  { name: 'Poor',                                                               pricePerUnit: 12,   unit: 'SF'   },
+  { name: 'Basic Pedestrian Bridge (No Discount) - Per Linear Ft',             pricePerUnit: 400,  unit: 'LF'   },
+  { name: 'Small jobs under 5 squares Scaffold is needed (no discount)',        pricePerUnit: 2700, unit: 'flat' },
 ];
 
 export const masonryDemolitionItems = [
-  { name: 'Demo Old Stucco', pricePerSF: 0 },
-  { name: 'Demo Old Brickface', pricePerSF: 0 },
-  { name: 'Demo Old Hardcoat', pricePerSF: 0 },
+  { name: 'Chipping masonry off masonry', pricePerSF: 10.50 },
+  { name: 'Chipping masonry off wood',    pricePerSF: 5.50  },
+  { name: 'Remove wood siding',           pricePerSF: 2.00  },
+  { name: 'Remove vinyl/aluminum',        pricePerSF: 2.00  },
+  { name: 'Remove cedar shakes',          pricePerSF: 3.00  },
+  { name: 'Remove EIFS 1" Glued',         pricePerSF: 4.00  },
 ];
 
 export const masonryDumpsterItems = [
-  { name: 'Debris removal under 4 squares', priceEach: 830 },
-  { name: '10 yard dumpster (4–10 squares)', priceEach: 1542 },
-  { name: '20 yard dumpster (11–20 squares)', priceEach: 1868 },
+  { name: 'Small job debris removal charge up to 3 squares',       priceEach: 350   },
+  { name: 'Standard debris (4–10 Squares) 10 Yard Dumpster',       priceEach: 1500  },
+  { name: 'Standard debris (11–20 Squares) 20 Yard Dumpster',      priceEach: 1772  },
+  { name: 'Standard debris (Over 20 Squares) 30 Yard Dumpster',    priceEach: 2140  },
+  { name: 'Masonry debris (4–10 Squares) 10 Yard Dumpster',        priceEach: 2070  },
+  { name: 'Masonry debris (11–20 Squares) 20 Yard Dumpster',       priceEach: 2550  },
 ];
 
 // Standard = below 26 ft, over26 = 26–35 ft, over35 = above 35 ft
+// note: optional red note displayed below item name
 export const masonryBrickfaceItems = [
-  { name: 'Brickface',         standardPrice: 0, over26Price: 0, over35Price: 0 },
-  { name: 'Troweled Stucco',   standardPrice: 0, over26Price: 0, over35Price: 0 },
-  { name: 'Hardcoat',          standardPrice: 0, over26Price: 0, over35Price: 0 },
+  { name: 'Brickface (5/8") Running Bond; max 15% 2 color toning',    note: 'must add for scaffolding',                    standardPrice: 34.73, over26Price: 39.48, over35Price: 43.43 },
+  { name: '405C Stucco (3/8") Drag/Trowel Down',                       note: 'must add for scaffolding',                    standardPrice: 17.07, over26Price: 18.68, over35Price: 20.34 },
+  { name: '405A Stucco (5/8") Drag/Trowel Down',                       note: 'must add for scaffolding',                    standardPrice: 23.80, over26Price: 25.97, over35Price: 28.88 },
+  { name: 'Hardcoat (5/8") 1x4 foam bands for windows/doors included', note: 'scaffolding is already included in the price', standardPrice: 36.00, over26Price: 37.80, over35Price: 39.69 },
+  { name: 'Work over Masonry',                                          note: null,                                           standardPrice: 0.70,  over26Price: 0.80,  over35Price: 0.87  },
+  { name: 'Extra Scratch Coat (3/8" Thick) - If Needed',               note: null,                                           standardPrice: 6.31,  over26Price: 6.84,  over35Price: 8.05  },
 ];
 
 export const masonryLaborAdditionItems = [
-  { name: 'Labor Addition 1', pricePerSF: 0 },
-  { name: 'Labor Addition 2', pricePerSF: 0 },
+  { name: 'Stucco between existing Tudor boards', pricePerSF: 1.76 },
 ];
 
 export const masonryExcessiveCarryItems = [
@@ -400,43 +414,62 @@ export const masonryExcessiveCarryItems = [
 ];
 
 export const masonryFlushBandsItems = [
-  { name: '4" Flush Band', pricePerLF: 0 },
-  { name: '6" Flush Band', pricePerLF: 0 },
+  { name: 'Quoines / Keystones',                          pricePerLF: 84.00 },
+  { name: 'Bands',                                        pricePerLF: 21.45 },
+  { name: 'Existing Raised Band - 2 Edges',               pricePerLF: 36.18 },
+  { name: 'Columns (4 Straight Edges - Includes all 4 Edges)', pricePerLF: 78.35 },
 ];
 
 // manualPer: true means both qty and per-unit price are manual inputs
 export const masonryRaisedFoamItems = [
-  { name: '4" Raised Foam Band',                         pricePerUnit: 0, manualPer: false },
-  { name: '6" Raised Foam Band',                         pricePerUnit: 0, manualPer: false },
-  { name: 'Additional Foam Bands (see price book)',       pricePerUnit: 0, manualPer: true  },
+  { name: 'Quoines',                               pricePerUnit: 143, manualPer: false },
+  { name: 'Keystones',                             pricePerUnit: 143, manualPer: false },
+  { name: 'Additional foam bands see price book',  pricePerUnit: 0,   manualPer: true  },
 ];
 
-// requiresYes: row only counts when stepsAYesNo === 'yes'
+// requiresYes: row only calculates when stepsAYesNo === 'yes'
+// displayOnly: no input, just shows text (e.g. "Call for pricing")
 export const masonryStepsTreadsAItems = [
-  { name: 'Remove brick treads',  pricePerLF: 0, requiresYes: true  },
-  { name: 'New bluestone treads', pricePerLF: 0, requiresYes: false },
-  { name: 'Tuck point treads',    pricePerLF: 0, requiresYes: false },
+  { name: 'Remove brick treads + build to same height (limestone not included)', pricePerLF: 35,  requiresYes: true,  displayOnly: false },
+  { name: '10" Wide',   pricePerLF: 105, requiresYes: false, displayOnly: false },
+  { name: '12" Wide',   pricePerLF: 145, requiresYes: false, displayOnly: false },
+  { name: '14" Wide',   pricePerLF: 175, requiresYes: false, displayOnly: false },
+  { name: '16" Wide',   pricePerLF: 185, requiresYes: false, displayOnly: false },
+  { name: '18" Wide',   pricePerLF: 195, requiresYes: false, displayOnly: false },
+  { name: '20" Wide',   pricePerLF: 205, requiresYes: false, displayOnly: false },
+  { name: '24" Wide',   pricePerLF: 215, requiresYes: false, displayOnly: false },
+  { name: 'PVC Capping – Top of Parapet Wall', pricePerLF: 0, requiresYes: false, displayOnly: true  },
 ];
 
 export const masonryStepsTreadsBItems = [
-  { name: 'Precast steps', priceEach: 0 },
-  { name: 'Brick steps',   priceEach: 0 },
+  { name: 'Pour a Pad – Up to 30 SQ FT',    priceEach: 850,  highlight: true  },
+  { name: '7–10 Treads/Coping surcharge',    priceEach: 850,  highlight: false },
+  { name: '11–15 Treads/Coping surcharge',   priceEach: 1500, highlight: false },
+  { name: 'Over 16 Treads/Coping surcharge', priceEach: 1700, highlight: false },
 ];
 
 export const masonryCarpentryItems = [
-  { name: 'Carpentry Work', priceEach: 0 },
+  { name: 'Frame in wood (Less than 30 sq ft)',                                    priceEach: 565,  highlight: false },
+  { name: 'Frame in wood (Greater than 30 sq ft)',                                 priceEach: 875,  highlight: false },
+  { name: 'Frame in masonry (Less than 30 sq ft)',                                 priceEach: 825,  highlight: false },
+  { name: 'Frame in masonry (Greater than 30 sq ft)',                              priceEach: 975,  highlight: false },
+  { name: 'Installing 1/2" sheathing over wood studs (Includes 1 full sheet)',     priceEach: 350,  highlight: true  },
+  { name: 'Removing ONLY Awnings up to 7\'',                                       priceEach: 480,  highlight: false },
+  { name: 'Removing ONLY Awnings up to 14\'',                                      priceEach: 810,  highlight: false },
+  { name: 'Install CST supplied shutters',                                          priceEach: 250,  highlight: false },
 ];
 
 export const masonryZones = [
-  { name: 'Zone 1 (Sussex, Warren, Hunterdon, Mercer)', pct: 0.04 },
-  { name: 'Zone 2 (Ocean, Burlington, Camden)',          pct: 0.05 },
-  { name: 'Zone 3',                                      pct: 0.06 },
+  { name: 'Zone 1: Sussex, Warren, Hunterdon, Rockland',                                          pct: 0.04 },
+  { name: 'Zone 2: Westchester, All NY Boroughs',                                                 pct: 0.05 },
+  { name: 'Zone 3: Camden, Gloucester, Salem, Cumberland, Atlantic, Putnam, Orange',              pct: 0.06 },
 ];
 
 export const masonryVolumeDiscounts = [
-  { range: 'Under $10,000',          discount: '0%' },
-  { range: '$10,000 – $14,999', discount: '0%' },
-  { range: '$15,000 – $19,999', discount: '0%' },
-  { range: '$20,000 – $24,999', discount: '0%' },
-  { range: '$25,000+',               discount: '0%' },
+  { low: '$2,000',   high: '$6,000',   discount: '0%'  },
+  { low: '$6,000',   high: '$12,000',  discount: '6%'  },
+  { low: '$12,001',  high: '$20,000',  discount: '10%' },
+  { low: '$20,000',  high: '$35,000',  discount: '15%' },
+  { low: '$35,001',  high: '$55,000',  discount: '18%' },
+  { low: '$55,001',  high: null,       discount: '20%' },
 ];

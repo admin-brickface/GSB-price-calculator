@@ -75,7 +75,7 @@ function formulaLabel(loc) {
   return '';
 }
 
-// ─── WallsMeasurementTable sub-component ────────────────────────────────────
+// ─── WallsMeasurementTable ───────────────────────────────────────────────────
 function WallsMeasurementTable({ data, setData }) {
   const handleChange = (rowIdx, colIdx, value) => {
     setData(data.map((row, i) => {
@@ -114,40 +114,26 @@ function WallsMeasurementTable({ data, setData }) {
                     {loc}
                   </span>
                 ) : (
-                  <input
-                    type="text"
-                    value={row[0]}
+                  <input type="text" value={row[0]}
                     onChange={e => handleChange(rowIdx, 0, e.target.value)}
-                    style={inputStyle}
-                  />
+                    style={inputStyle} />
                 )}
               </td>
               <td>
-                <input
-                  type="number" inputMode="decimal"
-                  value={row[1]}
+                <input type="number" inputMode="decimal" value={row[1]}
                   onChange={e => handleChange(rowIdx, 1, e.target.value)}
-                  style={numStyle}
-                  placeholder={isDorm ? 'Qty' : ''}
-                />
+                  style={numStyle} placeholder={isDorm ? 'Qty' : ''} />
               </td>
               <td>
                 {isDorm ? (
                   <div style={{ minHeight: '44px', backgroundColor: '#000', borderRadius: '2px' }} />
                 ) : (
-                  <input
-                    type="number" inputMode="decimal"
-                    value={row[2]}
+                  <input type="number" inputMode="decimal" value={row[2]}
                     onChange={e => handleChange(rowIdx, 2, e.target.value)}
-                    style={numStyle}
-                  />
+                    style={numStyle} />
                 )}
               </td>
-              <td style={{
-                textAlign: 'center',
-                backgroundColor: formula ? '#f0f0f0' : 'transparent',
-                fontSize: '12px',
-              }}>
+              <td style={{ textAlign: 'center', backgroundColor: formula ? '#f0f0f0' : 'transparent', fontSize: '12px' }}>
                 {formula}
               </td>
               <td style={{ textAlign: 'right', padding: '8px', fontWeight: 'bold' }}>
@@ -168,8 +154,10 @@ function Masonry() {
   const [scaffoldData, setScaffoldData] = useState(buildWallsInitial);
   const [workAreaData, setWorkAreaData] = useState(buildWallsInitial);
 
-  // Scaffolding Degree of Difficulty – radio-style (one at a time, -1 = none)
+  // Scaffolding DoD – radio-style (-1 = none)
   const [scaffoldTierIdx, setScaffoldTierIdx] = useState(-1);
+  // Manual inputs for LF and flat-rate scaffold rows (indexed by row position in masonryScaffoldingTiers)
+  const [scaffoldManualQty, setScaffoldManualQty] = useState(() => masonryScaffoldingTiers.map(() => ''));
 
   // Demolition – manual SF per row
   const [demoSqft, setDemoSqft] = useState(() => masonryDemolitionItems.map(() => ''));
@@ -177,41 +165,41 @@ function Masonry() {
   // Dumpsters – manual qty per row
   const [dumpsterQty, setDumpsterQty] = useState(() => masonryDumpsterItems.map(() => ''));
 
-  // Brickface + Troweled Stucco + Hardcoat
-  const [bfChecked,      setBfChecked]      = useState(() => masonryBrickfaceItems.map(() => false));
-  const [bfSFOverride,   setBfSFOverride]   = useState(() => masonryBrickfaceItems.map(() => ''));
-  const [bfGlobalTier,   setBfGlobalTier]   = useState('standard');       // header radio
-  const [bfRowTier,      setBfRowTier]      = useState(() => masonryBrickfaceItems.map(() => null)); // null = use global
+  // Brickface
+  const [bfChecked,    setBfChecked]    = useState(() => masonryBrickfaceItems.map(() => false));
+  const [bfSFOverride, setBfSFOverride] = useState(() => masonryBrickfaceItems.map(() => ''));
+  const [bfGlobalTier, setBfGlobalTier] = useState('standard');
+  const [bfRowTier,    setBfRowTier]    = useState(() => masonryBrickfaceItems.map(() => null));
 
-  // Labor Additions – manual SF per row
+  // Labor Additions
   const [laborSqft, setLaborSqft] = useState(() => masonryLaborAdditionItems.map(() => ''));
 
-  // Excessive Carry – manual qty per row
+  // Excessive Carry
   const [carryQty, setCarryQty] = useState(() => masonryExcessiveCarryItems.map(() => ''));
 
-  // Flush Masonry Bands – manual LF per row
+  // Flush Masonry Bands
   const [flushLF, setFlushLF] = useState(() => masonryFlushBandsItems.map(() => ''));
 
-  // Raised Foam Bands – manual qty; 3rd row also has manual per-unit price
+  // Raised Foam Bands
   const [foamQty, setFoamQty] = useState(() => masonryRaisedFoamItems.map(() => ''));
   const [foamPer, setFoamPer] = useState(() =>
     masonryRaisedFoamItems.map(item => item.manualPer ? '' : String(item.pricePerUnit))
   );
 
   // Steps & Treads A
-  const [stepsAYesNo, setStepsAYesNo] = useState(null); // null | 'yes' | 'no'
+  const [stepsAYesNo, setStepsAYesNo] = useState(null);
   const [stepsALF,    setStepsALF]    = useState(() => masonryStepsTreadsAItems.map(() => ''));
 
-  // Steps & Treads B – manual qty per row
+  // Steps & Treads B
   const [stepsBQty, setStepsBQty] = useState(() => masonryStepsTreadsBItems.map(() => ''));
 
-  // Carpentry Work – manual qty per row
+  // Carpentry Work
   const [carpentryQty, setCarpentryQty] = useState(() => masonryCarpentryItems.map(() => ''));
 
-  // Zoning – radio-style checkbox (-1 = none)
+  // Zoning
   const [zoneIdx, setZoneIdx] = useState(-1);
 
-  // Project Calculation – Office column published price is manual; last 2 rows are manual for both cols
+  // Project Calculation
   const [officePublishedPrice, setOfficePublishedPrice] = useState('');
   const [contractPriceRep,     setContractPriceRep]     = useState('');
   const [contractPriceOffice,  setContractPriceOffice]  = useState('');
@@ -226,9 +214,14 @@ function Masonry() {
   const totalScaffoldArea = scaffoldData.reduce((s, row) => s + computeRowSF(row), 0);
   const totalWorkArea     = workAreaData.reduce((s, row) => s + computeRowSF(row), 0);
 
-  const scaffoldTotal = scaffoldTierIdx >= 0
-    ? totalScaffoldArea * masonryScaffoldingTiers[scaffoldTierIdx].pricePerSF
-    : 0;
+  const scaffoldTotal = (() => {
+    if (scaffoldTierIdx < 0) return 0;
+    const tier = masonryScaffoldingTiers[scaffoldTierIdx];
+    if (tier.unit === 'SF')   return totalScaffoldArea * tier.pricePerUnit;
+    if (tier.unit === 'LF')   return (parseFloat(scaffoldManualQty[scaffoldTierIdx]) || 0) * tier.pricePerUnit;
+    if (tier.unit === 'flat') return (parseFloat(scaffoldManualQty[scaffoldTierIdx]) || 1) * tier.pricePerUnit;
+    return 0;
+  })();
 
   const demoTotal = masonryDemolitionItems.reduce((s, item, i) =>
     s + (parseFloat(demoSqft[i]) || 0) * item.pricePerSF, 0);
@@ -261,11 +254,11 @@ function Masonry() {
   const foamTotal = masonryRaisedFoamItems.reduce((s, item, i) => {
     const qty = parseFloat(foamQty[i]) || 0;
     const per = parseFloat(foamPer[i]);
-    const unit = isNaN(per) ? item.pricePerUnit : per;
-    return s + qty * unit;
+    return s + qty * (isNaN(per) ? item.pricePerUnit : per);
   }, 0);
 
   const stepsATotal = masonryStepsTreadsAItems.reduce((s, item, i) => {
+    if (item.displayOnly) return s;
     if (item.requiresYes && stepsAYesNo !== 'yes') return s;
     return s + (parseFloat(stepsALF[i]) || 0) * item.pricePerLF;
   }, 0);
@@ -283,14 +276,11 @@ function Masonry() {
   const zoneAmount = zoneIdx >= 0 ? subtotal * masonryZones[zoneIdx].pct : 0;
   const totalCost  = subtotal + zoneAmount;
 
-  // Project Calculation cascades
-  const repCascade = calculateDiscountCascade(totalCost);
-  const officePubNum = parseFloat(officePublishedPrice) || 0;
+  const repCascade    = calculateDiscountCascade(totalCost);
+  const officePubNum  = parseFloat(officePublishedPrice) || 0;
   const officeCascade = calculateDiscountCascade(officePubNum);
 
   const fmt = (n) => '$' + Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-  // ── Helpers for immutable array updates ─────────────────────────────────
   const updateArr = (arr, idx, val) => arr.map((v, i) => i === idx ? val : v);
 
   // ── Render ───────────────────────────────────────────────────────────────
@@ -319,15 +309,25 @@ function Masonry() {
           <tr>
             <th style={{ width: 50 }}></th>
             <th>Description</th>
-            <th className="right-align">Sq Ft</th>
-            <th className="right-align">Price / SF</th>
-            <th className="right-align">Total</th>
+            <th className="right-align">Sq Ft / Qty</th>
+            <th className="right-align">$ Per Sq Ft</th>
+            <th className="right-align">Sub-Total</th>
           </tr>
         </thead>
         <tbody>
           {masonryScaffoldingTiers.map((tier, i) => {
             const checked = scaffoldTierIdx === i;
-            const total   = checked ? totalScaffoldArea * tier.pricePerSF : 0;
+            const sfDisplay = tier.unit === 'SF'
+              ? totalScaffoldArea.toFixed(2)
+              : tier.unit === 'LF' || tier.unit === 'flat'
+              ? null : '';
+            const total = (() => {
+              if (!checked) return 0;
+              if (tier.unit === 'SF')   return totalScaffoldArea * tier.pricePerUnit;
+              if (tier.unit === 'LF')   return (parseFloat(scaffoldManualQty[i]) || 0) * tier.pricePerUnit;
+              if (tier.unit === 'flat') return tier.pricePerUnit;
+              return 0;
+            })();
             return (
               <tr key={i}>
                 <td style={{ textAlign: 'center' }}>
@@ -335,8 +335,19 @@ function Masonry() {
                     onChange={() => setScaffoldTierIdx(checked ? -1 : i)} />
                 </td>
                 <td>{tier.name}</td>
-                <td className="right-align">{totalScaffoldArea.toFixed(2)}</td>
-                <td className="right-align">{fmt(tier.pricePerSF)}</td>
+                <td>
+                  {sfDisplay !== null ? (
+                    <div style={{ textAlign: 'right', padding: '8px' }}>{sfDisplay}</div>
+                  ) : (
+                    <input type="number" inputMode="decimal" min="0" style={numStyle}
+                      placeholder={tier.unit === 'LF' ? 'Linear Ft' : 'Qty'}
+                      value={scaffoldManualQty[i]}
+                      onChange={e => setScaffoldManualQty(updateArr(scaffoldManualQty, i, e.target.value))} />
+                  )}
+                </td>
+                <td className="right-align">
+                  {tier.unit === 'flat' ? 'Flat Rate' : fmt(tier.pricePerUnit)}
+                </td>
                 <td className="right-align total-price-cell">{fmt(total)}</td>
               </tr>
             );
@@ -351,14 +362,13 @@ function Masonry() {
           <tr>
             <th>Description</th>
             <th style={{ width: 120 }} className="right-align">Sq Ft</th>
-            <th className="right-align">Price / SF</th>
-            <th className="right-align">Total</th>
+            <th className="right-align">$ Per Sq Ft</th>
+            <th className="right-align">Sub-Total</th>
           </tr>
         </thead>
         <tbody>
           {masonryDemolitionItems.map((item, i) => {
-            const sf    = parseFloat(demoSqft[i]) || 0;
-            const total = sf * item.pricePerSF;
+            const sf = parseFloat(demoSqft[i]) || 0;
             return (
               <tr key={i}>
                 <td>{item.name}</td>
@@ -368,7 +378,7 @@ function Masonry() {
                     onChange={e => setDemoSqft(updateArr(demoSqft, i, e.target.value))} />
                 </td>
                 <td className="right-align">{fmt(item.pricePerSF)}</td>
-                <td className="right-align total-price-cell">{fmt(total)}</td>
+                <td className="right-align total-price-cell">{fmt(sf * item.pricePerSF)}</td>
               </tr>
             );
           })}
@@ -376,20 +386,25 @@ function Masonry() {
       </table>
 
       {/* ── Dumpsters ────────────────────────────────────────────────────── */}
-      <h3>Dumpsters</h3>
+      <h3>Dumpsters (Standard Debris and Masonry)</h3>
+      {/* Important notice about dumpsters */}
+      <div style={{ border: '2px solid #C0392B', borderRadius: '4px', padding: '12px 16px', margin: '0 0 8px 0', color: '#C0392B', backgroundColor: '#fff5f5', fontSize: '14px' }}>
+        <div><strong>DEBRIS REMOVAL OR DUMPSTERS ARE REQUIRED ON EVERY JOB</strong></div>
+        <div style={{ marginTop: '6px' }}>Dumpsters can be provided by the customer at their own expense – they would solely be responsible for delivery, pick up and weight overage fees if applicable.</div>
+        <div style={{ marginTop: '6px' }}>Must be written that way on contract.</div>
+      </div>
       <table className="pricing-table">
         <thead>
           <tr>
             <th>Description</th>
-            <th style={{ width: 100 }} className="right-align">Qty</th>
-            <th className="right-align">Price / EA</th>
-            <th className="right-align">Total</th>
+            <th style={{ width: 100 }} className="right-align">Quantity</th>
+            <th className="right-align">Per Item</th>
+            <th className="right-align">Sub-Total</th>
           </tr>
         </thead>
         <tbody>
           {masonryDumpsterItems.map((item, i) => {
-            const qty   = parseFloat(dumpsterQty[i]) || 0;
-            const total = qty * item.priceEach;
+            const qty = parseFloat(dumpsterQty[i]) || 0;
             return (
               <tr key={i}>
                 <td>{item.name}</td>
@@ -399,7 +414,7 @@ function Masonry() {
                     onChange={e => setDumpsterQty(updateArr(dumpsterQty, i, e.target.value))} />
                 </td>
                 <td className="right-align">{fmt(item.priceEach)}</td>
-                <td className="right-align total-price-cell">{fmt(total)}</td>
+                <td className="right-align total-price-cell">{fmt(qty * item.priceEach)}</td>
               </tr>
             );
           })}
@@ -408,6 +423,9 @@ function Masonry() {
 
       {/* ── Brickface + Troweled Stucco + Hardcoat ───────────────────────── */}
       <h3>Brickface + Troweled Stucco + Hardcoat</h3>
+      <div style={{ color: '#C0392B', fontWeight: 'bold', fontSize: '13px', marginBottom: '6px' }}>
+        No outs can be deducted unless it is 50% of garage door outs which is allowed
+      </div>
       <table className="pricing-table">
         <thead>
           <tr>
@@ -415,7 +433,6 @@ function Masonry() {
             <th>Description</th>
             <th className="right-align">Sq Ft</th>
             <th style={{ width: 110 }}>SF Override</th>
-            {/* Global tier header checkboxes */}
             <th style={{ textAlign: 'center' }}>
               <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
                 <input type="checkbox" style={cbStyle}
@@ -440,7 +457,7 @@ function Masonry() {
                 Over 35'
               </label>
             </th>
-            <th className="right-align">Subtotal</th>
+            <th className="right-align">Sub-Total</th>
           </tr>
         </thead>
         <tbody>
@@ -452,10 +469,8 @@ function Masonry() {
                            : rowTier === 'over26' ? item.over26Price
                            : item.standardPrice;
             const rowTotal = bfChecked[i] ? effectSF * price : 0;
-
-            const toggleRowTier = (tier) => {
+            const toggleRowTier = (tier) =>
               setBfRowTier(updateArr(bfRowTier, i, bfRowTier[i] === tier ? null : tier));
-            };
 
             return (
               <tr key={i}>
@@ -464,7 +479,12 @@ function Masonry() {
                     checked={bfChecked[i]}
                     onChange={() => setBfChecked(updateArr(bfChecked, i, !bfChecked[i]))} />
                 </td>
-                <td>{item.name}</td>
+                <td>
+                  <div>{item.name}</div>
+                  {item.note && (
+                    <div style={{ color: '#C0392B', fontSize: '12px', marginTop: '2px' }}>{item.note}</div>
+                  )}
+                </td>
                 <td className="right-align">{totalWorkArea.toFixed(2)}</td>
                 <td>
                   <input type="number" inputMode="decimal" min="0" style={numStyle}
@@ -472,7 +492,6 @@ function Masonry() {
                     value={bfSFOverride[i]}
                     onChange={e => setBfSFOverride(updateArr(bfSFOverride, i, e.target.value))} />
                 </td>
-                {/* Per-row tier checkboxes */}
                 <td style={{ textAlign: 'center' }}>
                   <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
                     <input type="checkbox" style={{ ...cbStyle, width: 16, height: 16 }}
@@ -511,14 +530,13 @@ function Masonry() {
           <tr>
             <th>Description</th>
             <th style={{ width: 120 }} className="right-align">Sq Ft</th>
-            <th className="right-align">Price / SF</th>
-            <th className="right-align">Total</th>
+            <th className="right-align">$ Per Sq Ft</th>
+            <th className="right-align">Sub-Total</th>
           </tr>
         </thead>
         <tbody>
           {masonryLaborAdditionItems.map((item, i) => {
-            const sf    = parseFloat(laborSqft[i]) || 0;
-            const total = sf * item.pricePerSF;
+            const sf = parseFloat(laborSqft[i]) || 0;
             return (
               <tr key={i}>
                 <td>{item.name}</td>
@@ -528,7 +546,7 @@ function Masonry() {
                     onChange={e => setLaborSqft(updateArr(laborSqft, i, e.target.value))} />
                 </td>
                 <td className="right-align">{fmt(item.pricePerSF)}</td>
-                <td className="right-align total-price-cell">{fmt(total)}</td>
+                <td className="right-align total-price-cell">{fmt(sf * item.pricePerSF)}</td>
               </tr>
             );
           })}
@@ -543,13 +561,12 @@ function Masonry() {
             <th>Description</th>
             <th style={{ width: 100 }} className="right-align">Qty</th>
             <th className="right-align">Price / EA</th>
-            <th className="right-align">Total</th>
+            <th className="right-align">Sub-Total</th>
           </tr>
         </thead>
         <tbody>
           {masonryExcessiveCarryItems.map((item, i) => {
-            const qty   = parseFloat(carryQty[i]) || 0;
-            const total = qty * item.priceEach;
+            const qty = parseFloat(carryQty[i]) || 0;
             return (
               <tr key={i}>
                 <td>{item.name}</td>
@@ -559,7 +576,7 @@ function Masonry() {
                     onChange={e => setCarryQty(updateArr(carryQty, i, e.target.value))} />
                 </td>
                 <td className="right-align">{fmt(item.priceEach)}</td>
-                <td className="right-align total-price-cell">{fmt(total)}</td>
+                <td className="right-align total-price-cell">{fmt(qty * item.priceEach)}</td>
               </tr>
             );
           })}
@@ -573,14 +590,13 @@ function Masonry() {
           <tr>
             <th>Description</th>
             <th style={{ width: 120 }} className="right-align">Linear Ft</th>
-            <th className="right-align">Price / LF</th>
-            <th className="right-align">Total</th>
+            <th className="right-align">$ Per LF</th>
+            <th className="right-align">Sub-Total</th>
           </tr>
         </thead>
         <tbody>
           {masonryFlushBandsItems.map((item, i) => {
-            const lf    = parseFloat(flushLF[i]) || 0;
-            const total = lf * item.pricePerLF;
+            const lf = parseFloat(flushLF[i]) || 0;
             return (
               <tr key={i}>
                 <td>{item.name}</td>
@@ -590,7 +606,7 @@ function Masonry() {
                     onChange={e => setFlushLF(updateArr(flushLF, i, e.target.value))} />
                 </td>
                 <td className="right-align">{fmt(item.pricePerLF)}</td>
-                <td className="right-align total-price-cell">{fmt(total)}</td>
+                <td className="right-align total-price-cell">{fmt(lf * item.pricePerLF)}</td>
               </tr>
             );
           })}
@@ -603,17 +619,16 @@ function Masonry() {
         <thead>
           <tr>
             <th>Description</th>
-            <th style={{ width: 110 }} className="right-align">Qty</th>
+            <th style={{ width: 110 }} className="right-align">Quantity</th>
             <th style={{ width: 120 }} className="right-align">Per</th>
-            <th className="right-align">Total</th>
+            <th className="right-align">Sub-Total</th>
           </tr>
         </thead>
         <tbody>
           {masonryRaisedFoamItems.map((item, i) => {
-            const qty   = parseFloat(foamQty[i]) || 0;
-            const per   = parseFloat(foamPer[i]);
-            const unit  = isNaN(per) ? item.pricePerUnit : per;
-            const total = qty * unit;
+            const qty  = parseFloat(foamQty[i]) || 0;
+            const per  = parseFloat(foamPer[i]);
+            const unit = isNaN(per) ? item.pricePerUnit : per;
             return (
               <tr key={i}>
                 <td>{item.name}</td>
@@ -629,27 +644,15 @@ function Masonry() {
                       value={foamPer[i]}
                       onChange={e => setFoamPer(updateArr(foamPer, i, e.target.value))} />
                   ) : (
-                    <span style={{ padding: '8px', display: 'block', textAlign: 'right' }}>{fmt(item.pricePerUnit)}</span>
+                    <div style={{ textAlign: 'right', padding: '8px' }}>{fmt(item.pricePerUnit)}</div>
                   )}
                 </td>
-                <td className="right-align total-price-cell">{fmt(total)}</td>
+                <td className="right-align total-price-cell">{fmt(qty * unit)}</td>
               </tr>
             );
           })}
         </tbody>
       </table>
-
-      {/* ── Important Notice ──────────────────────────────────────────────── */}
-      <div style={{
-        border: '2px solid #C0392B',
-        borderRadius: '4px',
-        padding: '12px 16px',
-        margin: '20px 0',
-        color: '#C0392B',
-        backgroundColor: '#fff5f5',
-      }}>
-        <strong>IMPORTANT NOTICE:</strong> All prices are subject to change. Field measurements must be verified on-site before final quote is issued. Any changes to scope of work after contract signing may result in additional charges.
-      </div>
 
       {/* ── Steps and Treads A ────────────────────────────────────────────── */}
       <h3>Steps and Treads (A)</h3>
@@ -657,8 +660,8 @@ function Masonry() {
         <thead>
           <tr>
             <th colSpan={4}>
-              Remove brick treads?&nbsp;&nbsp;
-              <label style={{ cursor: 'pointer', marginRight: '16px' }}>
+              Are brick treads being removed? (Circle One)&nbsp;&nbsp;
+              <label style={{ cursor: 'pointer', marginRight: '20px' }}>
                 <input type="checkbox" style={{ ...cbStyle, width: 16, height: 16, marginRight: 4 }}
                   checked={stepsAYesNo === 'yes'}
                   onChange={() => setStepsAYesNo(stepsAYesNo === 'yes' ? null : 'yes')} />
@@ -675,29 +678,57 @@ function Masonry() {
           <tr>
             <th>Description</th>
             <th style={{ width: 120 }} className="right-align">Linear Ft</th>
-            <th className="right-align">Price / LF</th>
-            <th className="right-align">Total</th>
+            <th className="right-align">Per LF</th>
+            <th className="right-align">Sub-Total</th>
           </tr>
         </thead>
         <tbody>
+          {/* Note row between "remove brick treads" and width rows */}
           {masonryStepsTreadsAItems.map((item, i) => {
+            // Insert info note before 10" Wide row (index 1)
+            const noteRow = i === 1 ? (
+              <tr key="note">
+                <td colSpan={4} style={{ fontSize: '13px', fontStyle: 'italic', padding: '8px', backgroundColor: '#f9f9f9' }}>
+                  Pricing below "only" includes remove an existing limestone tread and replacing with new; does not include building it up.
+                </td>
+              </tr>
+            ) : null;
+
             const disabled = item.requiresYes && stepsAYesNo !== 'yes';
             const lf       = parseFloat(stepsALF[i]) || 0;
-            const total    = disabled ? 0 : lf * item.pricePerLF;
+            const total    = disabled || item.displayOnly ? 0 : lf * item.pricePerLF;
+
             return (
-              <tr key={i} style={disabled ? { opacity: 0.4 } : {}}>
-                <td>{item.name}</td>
-                <td>
-                  <input type="number" inputMode="decimal" min="0" style={numStyle}
-                    value={stepsALF[i]}
-                    disabled={disabled}
-                    onChange={e => setStepsALF(updateArr(stepsALF, i, e.target.value))} />
-                </td>
-                <td className="right-align">{fmt(item.pricePerLF)}</td>
-                <td className="right-align total-price-cell">{fmt(total)}</td>
-              </tr>
+              <React.Fragment key={i}>
+                {noteRow}
+                <tr style={disabled ? { opacity: 0.4 } : {}}>
+                  <td>{item.name}</td>
+                  <td>
+                    {item.displayOnly ? (
+                      <div style={{ padding: '8px', textAlign: 'center', fontStyle: 'italic', color: '#666' }}>Call for pricing</div>
+                    ) : (
+                      <input type="number" inputMode="decimal" min="0" style={numStyle}
+                        value={stepsALF[i]}
+                        disabled={disabled}
+                        onChange={e => setStepsALF(updateArr(stepsALF, i, e.target.value))} />
+                    )}
+                  </td>
+                  <td className="right-align">
+                    {item.displayOnly ? '' : fmt(item.pricePerLF)}
+                  </td>
+                  <td className="right-align total-price-cell">
+                    {item.displayOnly ? '' : fmt(total)}
+                  </td>
+                </tr>
+              </React.Fragment>
             );
           })}
+          {/* Red note at bottom */}
+          <tr>
+            <td colSpan={4} style={{ color: '#C0392B', fontSize: '13px', fontStyle: 'italic', padding: '8px' }}>
+              <strong>Important!</strong> Always add 1" to each side of the existing width of the tread when pricing out; and add 1" to front facing of tread
+            </td>
+          </tr>
         </tbody>
       </table>
 
@@ -707,25 +738,24 @@ function Masonry() {
         <thead>
           <tr>
             <th>Description</th>
-            <th style={{ width: 100 }} className="right-align">Qty</th>
-            <th className="right-align">Price / EA</th>
-            <th className="right-align">Total</th>
+            <th style={{ width: 100 }} className="right-align">Quantity</th>
+            <th className="right-align">Per</th>
+            <th className="right-align">Sub-Total</th>
           </tr>
         </thead>
         <tbody>
           {masonryStepsTreadsBItems.map((item, i) => {
-            const qty   = parseFloat(stepsBQty[i]) || 0;
-            const total = qty * item.priceEach;
+            const qty = parseFloat(stepsBQty[i]) || 0;
             return (
               <tr key={i}>
-                <td>{item.name}</td>
+                <td style={item.highlight ? { color: '#C0392B', fontWeight: 'bold' } : {}}>{item.name}</td>
                 <td>
                   <input type="number" inputMode="decimal" min="0" style={numStyle}
                     value={stepsBQty[i]}
                     onChange={e => setStepsBQty(updateArr(stepsBQty, i, e.target.value))} />
                 </td>
                 <td className="right-align">{fmt(item.priceEach)}</td>
-                <td className="right-align total-price-cell">{fmt(total)}</td>
+                <td className="right-align total-price-cell">{fmt(qty * item.priceEach)}</td>
               </tr>
             );
           })}
@@ -738,25 +768,24 @@ function Masonry() {
         <thead>
           <tr>
             <th>Description</th>
-            <th style={{ width: 100 }} className="right-align">Qty</th>
-            <th className="right-align">Price / EA</th>
-            <th className="right-align">Total</th>
+            <th style={{ width: 100 }} className="right-align">Quantity</th>
+            <th className="right-align">Per</th>
+            <th className="right-align">Sub-Total</th>
           </tr>
         </thead>
         <tbody>
           {masonryCarpentryItems.map((item, i) => {
-            const qty   = parseFloat(carpentryQty[i]) || 0;
-            const total = qty * item.priceEach;
+            const qty = parseFloat(carpentryQty[i]) || 0;
             return (
               <tr key={i}>
-                <td>{item.name}</td>
+                <td style={item.highlight ? { color: '#C0392B' } : {}}>{item.name}</td>
                 <td>
                   <input type="number" inputMode="decimal" min="0" style={numStyle}
                     value={carpentryQty[i]}
                     onChange={e => setCarpentryQty(updateArr(carpentryQty, i, e.target.value))} />
                 </td>
                 <td className="right-align">{fmt(item.priceEach)}</td>
-                <td className="right-align total-price-cell">{fmt(total)}</td>
+                <td className="right-align total-price-cell">{fmt(qty * item.priceEach)}</td>
               </tr>
             );
           })}
@@ -775,20 +804,19 @@ function Masonry() {
       </table>
 
       {/* ── Zoning Charges ────────────────────────────────────────────────── */}
-      <h3>Zoning Charges</h3>
+      <h3>Zoning Charges (If Applicable)</h3>
       <table className="pricing-table">
         <thead>
           <tr>
             <th style={{ width: 50 }}></th>
             <th>Zone</th>
             <th className="right-align">%</th>
-            <th className="right-align">Amount Added to Subtotal</th>
+            <th className="right-align">Sub-Total (Amount Added)</th>
           </tr>
         </thead>
         <tbody>
           {masonryZones.map((zone, i) => {
             const checked = zoneIdx === i;
-            const amount  = subtotal * zone.pct;
             return (
               <tr key={i}>
                 <td style={{ textAlign: 'center' }}>
@@ -796,14 +824,16 @@ function Masonry() {
                     checked={checked}
                     onChange={() => setZoneIdx(checked ? -1 : i)} />
                 </td>
-                <td>{zone.name}</td>
+                <td><strong>{zone.name.split(':')[0]}:</strong>{zone.name.slice(zone.name.indexOf(':') + 1)}</td>
                 <td className="right-align">{(zone.pct * 100).toFixed(0)}%</td>
-                <td className="right-align total-price-cell">{fmt(amount)}</td>
+                <td className="right-align total-price-cell">{fmt(subtotal * zone.pct)}</td>
               </tr>
             );
           })}
-          <tr style={{ fontWeight: 'bold', backgroundColor: '#f9f9f9' }}>
-            <td colSpan={3} className="label-cell">Total Cost (Subtotal + Zone)</td>
+          <tr style={{ fontWeight: 'bold', backgroundColor: '#f0f4f8' }}>
+            <td colSpan={3} className="label-cell">
+              Total Cost (Subtotal + Zone Charge If Any) = Published Price
+            </td>
             <td className="input-cell total-price-cell">{fmt(totalCost)}</td>
           </tr>
         </tbody>
@@ -814,15 +844,17 @@ function Masonry() {
       <table className="pricing-table">
         <thead>
           <tr>
-            <th>Contract Amount</th>
-            <th className="right-align">Discount</th>
+            <th colSpan={4} style={{ textAlign: 'center' }}>Volume Discount Chart</th>
           </tr>
         </thead>
         <tbody>
           {masonryVolumeDiscounts.map((row, i) => (
             <tr key={i}>
-              <td>{row.range}</td>
-              <td className="right-align">{row.discount}</td>
+              <td style={{ width: '15%' }}>{row.high ? 'Between' : 'Over'}</td>
+              <td className="right-align" style={{ width: '20%' }}>{row.low}</td>
+              <td style={{ width: '20%' }}>{row.high ? row.high : ''}</td>
+              <td style={{ width: '10%', textAlign: 'center' }}>=</td>
+              <td className="right-align" style={{ width: '15%' }}>{row.discount}</td>
             </tr>
           ))}
         </tbody>
