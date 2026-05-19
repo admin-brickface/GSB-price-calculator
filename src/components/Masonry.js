@@ -559,8 +559,8 @@ function Masonry() {
         <thead>
           <tr>
             <th>Description</th>
-            <th style={{ width: 100 }} className="right-align">Qty</th>
-            <th className="right-align">Price / EA</th>
+            <th style={{ width: 100 }} className="right-align">Per Job</th>
+            <th className="right-align">Per Item</th>
             <th className="right-align">Sub-Total</th>
           </tr>
         </thead>

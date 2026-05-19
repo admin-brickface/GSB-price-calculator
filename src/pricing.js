@@ -410,7 +410,9 @@ export const masonryLaborAdditionItems = [
 ];
 
 export const masonryExcessiveCarryItems = [
-  { name: 'Excessive Carry – 100ft from truck', priceEach: 0 },
+  { name: '2.5 TO 7.5 SQS',    priceEach: 1092 },
+  { name: '7.5 TO 12.5 SQS',   priceEach: 2185 },
+  { name: '12.5 TO 19.5 SQS',  priceEach: 3265 },
 ];
 
 export const masonryFlushBandsItems = [
