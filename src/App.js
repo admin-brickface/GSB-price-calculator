@@ -8,6 +8,7 @@ import StuccoPainting from './components/StuccoPainting';
 import HousePainting from './components/HousePainting';
 import WindowReplacement from './components/WindowReplacement';
 import Roofing from './components/Roofing';
+import Masonry from './components/Masonry';
 
 function App() {
   const [activeTab, setActiveTab] = useState('gutters');
@@ -55,6 +56,7 @@ function App() {
           <option value="house-painting">House Painting</option>
           <option value="window-replacement">Provia Endure Vinyl Replacement Windows</option>
           <option value="roofing">Roofing</option>
+          <option value="masonry">Masonry</option>
         </select>
       </div>
 
@@ -65,6 +67,7 @@ function App() {
         <div style={{ display: activeTab === 'house-painting' ? 'block' : 'none' }}><HousePainting /></div>
         <div style={{ display: activeTab === 'window-replacement' ? 'block' : 'none' }}><WindowReplacement /></div>
         <div style={{ display: activeTab === 'roofing' ? 'block' : 'none' }}><Roofing /></div>
+        <div style={{ display: activeTab === 'masonry' ? 'block' : 'none' }}><Masonry /></div>
 
         {/* Customer info section - will appear in PDF */}
         <div className="pdf-customer-info">

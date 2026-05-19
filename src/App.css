@@ -691,6 +691,14 @@ footer {
   max-width: 800px;
 }
 
+.masonry-area-total {
+  padding: 8px 12px;
+  background-color: #f0f4f8;
+  border: 1px solid #d0d7de;
+  border-top: none;
+  font-size: 14px;
+}
+
 .window-final-summary h3 {
   background-color: #2C3E50;
   color: #FFFFFF;

@@ -359,3 +359,84 @@ export const roofingTiers = {
 
 export const roofingDumpsterPerSquare = 55;
 export const roofingLaborPerSquare = 150;
+
+// ------------------------------------------------------------
+// Masonry
+// ------------------------------------------------------------
+
+export const masonryScaffoldingTiers = [
+  { name: 'Standard', pricePerSF: 0 },
+  { name: 'Moderate', pricePerSF: 0 },
+  { name: 'Difficult', pricePerSF: 0 },
+  { name: 'Very Difficult', pricePerSF: 0 },
+];
+
+export const masonryDemolitionItems = [
+  { name: 'Demo Old Stucco', pricePerSF: 0 },
+  { name: 'Demo Old Brickface', pricePerSF: 0 },
+  { name: 'Demo Old Hardcoat', pricePerSF: 0 },
+];
+
+export const masonryDumpsterItems = [
+  { name: 'Debris removal under 4 squares', priceEach: 830 },
+  { name: '10 yard dumpster (4–10 squares)', priceEach: 1542 },
+  { name: '20 yard dumpster (11–20 squares)', priceEach: 1868 },
+];
+
+// Standard = below 26 ft, over26 = 26–35 ft, over35 = above 35 ft
+export const masonryBrickfaceItems = [
+  { name: 'Brickface',         standardPrice: 0, over26Price: 0, over35Price: 0 },
+  { name: 'Troweled Stucco',   standardPrice: 0, over26Price: 0, over35Price: 0 },
+  { name: 'Hardcoat',          standardPrice: 0, over26Price: 0, over35Price: 0 },
+];
+
+export const masonryLaborAdditionItems = [
+  { name: 'Labor Addition 1', pricePerSF: 0 },
+  { name: 'Labor Addition 2', pricePerSF: 0 },
+];
+
+export const masonryExcessiveCarryItems = [
+  { name: 'Excessive Carry – 100ft from truck', priceEach: 0 },
+];
+
+export const masonryFlushBandsItems = [
+  { name: '4" Flush Band', pricePerLF: 0 },
+  { name: '6" Flush Band', pricePerLF: 0 },
+];
+
+// manualPer: true means both qty and per-unit price are manual inputs
+export const masonryRaisedFoamItems = [
+  { name: '4" Raised Foam Band',                         pricePerUnit: 0, manualPer: false },
+  { name: '6" Raised Foam Band',                         pricePerUnit: 0, manualPer: false },
+  { name: 'Additional Foam Bands (see price book)',       pricePerUnit: 0, manualPer: true  },
+];
+
+// requiresYes: row only counts when stepsAYesNo === 'yes'
+export const masonryStepsTreadsAItems = [
+  { name: 'Remove brick treads',  pricePerLF: 0, requiresYes: true  },
+  { name: 'New bluestone treads', pricePerLF: 0, requiresYes: false },
+  { name: 'Tuck point treads',    pricePerLF: 0, requiresYes: false },
+];
+
+export const masonryStepsTreadsBItems = [
+  { name: 'Precast steps', priceEach: 0 },
+  { name: 'Brick steps',   priceEach: 0 },
+];
+
+export const masonryCarpentryItems = [
+  { name: 'Carpentry Work', priceEach: 0 },
+];
+
+export const masonryZones = [
+  { name: 'Zone 1 (Sussex, Warren, Hunterdon, Mercer)', pct: 0.04 },
+  { name: 'Zone 2 (Ocean, Burlington, Camden)',          pct: 0.05 },
+  { name: 'Zone 3',                                      pct: 0.06 },
+];
+
+export const masonryVolumeDiscounts = [
+  { range: 'Under $10,000',          discount: '0%' },
+  { range: '$10,000 – $14,999', discount: '0%' },
+  { range: '$15,000 – $19,999', discount: '0%' },
+  { range: '$20,000 – $24,999', discount: '0%' },
+  { range: '$25,000+',               discount: '0%' },
+];
