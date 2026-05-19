@@ -455,7 +455,7 @@ export const masonryCarpentryItems = [
   { name: 'Frame in wood (Greater than 30 sq ft)',                                 priceEach: 875,  highlight: false },
   { name: 'Frame in masonry (Less than 30 sq ft)',                                 priceEach: 825,  highlight: false },
   { name: 'Frame in masonry (Greater than 30 sq ft)',                              priceEach: 975,  highlight: false },
-  { name: 'Installing 1/2" sheathing over wood studs (Includes 1 full sheet)',     priceEach: 350,  highlight: true  },
+  { name: 'Installing 1/2" sheathing over wood studs (Includes 1 full sheet)',     priceEach: 350,  highlight: false },
   { name: 'Removing ONLY Awnings up to 7\'',                                       priceEach: 480,  highlight: false },
   { name: 'Removing ONLY Awnings up to 14\'',                                      priceEach: 810,  highlight: false },
   { name: 'Install CST supplied shutters',                                          priceEach: 250,  highlight: false },
